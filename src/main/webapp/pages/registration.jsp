@@ -5,100 +5,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - DreamHome Realty Nepal</title>
-    <link rel="stylesheet" href="../css/registration.css">
+    <title>Register - Sangri-La Estates</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/registration.css">
+
 </head>
 <body>
     <!-- Header -->
-    <header>
-        <a href="home.html" class="logo">
-            <div class="logo-icon">📊</div>
-            DreamHome Realty Nepal
-        </a>
-        <nav>
-            <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a href="buypage.html">Buy</a></li>
-                <li><a href="sell.html">Sell</a></li>
-                <li><a href="aboutus.html">About Us</a></li>
-                <li><a href="contactus.html">Contact</a></li>
-            </ul>
-        </nav>
-        <div class="header-actions">
-            <div class="header-icon">📍</div>
-            <div class="header-icon">🛒</div>
-            <a href="login.jsp"><button class="btn btn-outline">Sign In</button></a>
-            <a href="registration.jsp"><button class="btn btn-primary">Register</button></a>
-        </div>
-    </header>
+ 	    <!-- Include Header -->
+    <jsp:include page="/pages/header.jsp" />
 
     <!-- Registration Form Section -->
     <div class="registration-container">
         <div class="form-header">
             <h2>Create an Account</h2>
-            <p>Join DreamHome Realty Nepal to find your dream property</p>
+            <p>Join Sangri-La Estates to find your dream property</p>
         </div>
         <div class="form-body">
-            <form id="registrationForm">
+        	  	<% 
+					String errorMessage = (String) request.getAttribute("errorMessage");
+					if (errorMessage != null) {
+					    out.println("<div class='error-message'>" + errorMessage + "</div>");
+					}
+				%>
+			<form action="${pageContext.request.contextPath}/RegistrationServlet" method="post">
+
                 <div class="form-group form-row">
                     <div class="form-col">
                         <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="firstName" required>
+                        <input type="text" id="firstName" name="firstName" >
                     </div>
                     <div class="form-col">
                         <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" required>
+                        <input type="text" id="lastName" name="lastName" >
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
+                <div class="form-group form-row">
+                	<div class="form-col">
+                		<label for="phone">Phone Number</label>
+                    	<input type="tel" id="phone" name="phone">
+                	</div>
                 
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" required>
+                	<div class="form-col">
+                		<label for="dob">Date Of Birth</label>
+                    	<input type="text" id="dob" name="dob" >
+                	</div>
                 </div>
                 
                 <div class="form-group form-row">
                     <div class="form-col">
+                    	<label for="email">Email Address</label>
+                    	<input type="email" id="email" name="email" >
+                   </div>
+                   	<div class="form-col">
+                    	<label for="address">Address</label>
+                    	<input type="text" id="address" name="address">
+                   </div>
+ 
+                   
+                </div>
+                             
+                <div class="form-group form-row">
+                    <div class="form-col">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" >
                     </div>
                     <div class="form-col">
                         <label for="confirmPassword">Confirm Password</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <input type="password" id="confirmPassword" name="confirmPassword" >
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label>I am interested in</label>
-                    <div class="interest-options">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="buying" name="interest" value="buying">
-                            <label for="buying">Buying</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="renting" name="interest" value="renting">
-                            <label for="renting">Renting</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="selling" name="interest" value="selling">
-                            <label for="selling">Selling</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="investing" name="interest" value="investing">
-                            <label for="investing">Investing</label>
-                        </div>
+                <div class="form-group form-row">
+                    <div class="form-col">
+                         <label><input type="radio" name="role" value="CUSTOMER" > Customer</label>
                     </div>
-                </div>
-                
+                    <div class="form-col">
+                        <label><input type="radio" name="role" value="BROKER" > Broker</label>
+                    </div>
+                </div>                
                 <button type="submit" class="submit-btn">Create Account</button>
             </form>
         </div>
     </div>
-
-    <script src="../css/registration.css"></script>
+    
+ 	  <!-- Footer -->
+ 	<jsp:include page="/pages/footer.jsp" />
+   		
 </body>
 </html>

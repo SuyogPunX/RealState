@@ -16,86 +16,7 @@ a {
     color: inherit;
 }
         
- /* Header Styles */
-header {
-    padding: 15px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 100;
-}
 
-.logo {
-    display: flex;
-    align-items: center;
-    font-size: 24px;
-    font-weight: 700;
-    color: #1d3557;
-}
-
-.logo-icon {
-    margin-right: 10px;
-    font-size: 30px;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-}
-
-nav ul li {
-    margin: 0 15px;
-}
-
-nav ul li a {
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-nav ul li a:hover {
-    color: #4a80bd;
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-}
-
-.header-icon {
-    margin: 0 12px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.btn {
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.btn-outline {
-    border: 1px solid #1d3557;
-    color: #1d3557;
-    background: transparent;
-    margin-right: 10px;
-}
-
-.btn-primary {
-    background-color: #1d3557;
-    color: white;
-    border: none;
-}
-
-.btn:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-}
 /* Login Form Styles */
 .login-container {
     width: 90%;
@@ -373,5 +294,44 @@ footer {
     .cta-buttons {
         flex-direction: column;
         gap: 10px;
+    }
+}
+
+/* Error and Success Message Styles */
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 12px 16px;
+    border-radius: 4px;
+    border-left: 4px solid #c62828;
+    margin-bottom: 20px;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.success-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 12px 16px;
+    border-radius: 4px;
+    border-left: 4px solid #2e7d32;
+    margin-bottom: 20px;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional animations */
+.error-message, .success-message {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
