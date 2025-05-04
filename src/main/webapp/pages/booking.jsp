@@ -10,7 +10,7 @@
 </head>
 <body>
        <!-- Header -->
-  <jsp:include page="/pages/header1.jsp" />
+  <jsp:include page="/pages/headerSignout.jsp" />
 
     <!-- Hero Section -->
     <section class="hero">

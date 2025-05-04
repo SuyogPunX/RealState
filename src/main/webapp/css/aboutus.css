@@ -114,14 +114,22 @@ nav ul li a:hover {
 }
 
 .about-hero h1 {
+	color:black;
     font-size: 3rem;
     margin-bottom: 20px;
+}
+
+.about-hero p {
+	color:black;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
 }
 
 .about-content {
     max-width: 1200px;
     margin: 50px auto;
     padding: 0 20px;
+    color:black;
 }
 
 .about-section {

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/aboutus.css">
 </head>
 	 	    <!-- Include Header -->
-    <jsp:include page="/pages/header1.jsp" />
+    <jsp:include page="/pages/headerSignout.jsp" />
 
     <!-- Hero Section -->
     <section class="about-hero">

@@ -11,7 +11,19 @@
 <body>
 	   <!-- Header -->
    	    <!-- Include Header -->
-    <jsp:include page="/pages/header.jsp" />
+		<%
+		    HttpSession currentSession = request.getSession(false);
+		    if (currentSession != null && currentSession.getAttribute("user") != null) {
+		%>
+		    <jsp:include page="/pages/headerSignout.jsp" />
+		<%
+		    } else {
+		%>
+		    <jsp:include page="/pages/header.jsp" />
+		<%
+		    }
+		%>
+   		
 
 
     <!-- Hero Section -->

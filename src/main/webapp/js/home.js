@@ -41,18 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Registration and sign-in buttons
-    const registerBtn = document.querySelector('.btn-primary');
-    const signInBtn = document.querySelector('.btn-outline');
-    
-    registerBtn.addEventListener('click', function() {
-        alert('Registration form would open here!');
-    });
-    
-    signInBtn.addEventListener('click', function() {
-        alert('Sign in form would open here!');
-    });
-    
+
     // Mobile nav toggle (would be expanded in a real implementation)
     const mobileBreakpoint = 768;
     

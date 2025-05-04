@@ -11,7 +11,7 @@ import java.util.List;
 import org.apache.tomcat.jakartaee.bcel.classfile.ClassFormatException;
 
 import com.web.database.DatabaseConnection;
-import com.webmodel.House;
+import com.webmodel.Property;
 import com.webmodel.Statistics;
 
 public class AdminDAO {
@@ -66,8 +66,8 @@ private Connection conn;
     }
 
     // Method to get recent properties
-    public List<House> getRecentProperties() {
-        List<House> properties = new ArrayList<>();
+    public List<Property> getRecentProperties() {
+        List<Property> properties = new ArrayList<>();
         
         String query = "SELECT * FROM properties ORDER BY created_at DESC LIMIT 5";
         
@@ -75,7 +75,7 @@ private Connection conn;
 
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
-            	House property = new House();
+            	Property property = new Property();
             	property.setPropertyId(rs.getInt("property_id"));
                 property.setDescription(rs.getString("description"));
                 property.setAreaSqft(rs.getDouble("area_sqft"));
@@ -83,7 +83,6 @@ private Connection conn;
                 property.setBedrooms(rs.getInt("bedrooms"));
                 property.setBathrooms(rs.getInt("bathrooms"));
                 property.setKitchen(rs.getBoolean("kitchen"));
-                property.setListedBy(rs.getString("listed_by"));
                 property.setAvailable(rs.getBoolean("available"));
                 property.setCreatedAt(rs.getString("created_at"));
                 property.setYearBuilt(rs.getInt("year_built"));

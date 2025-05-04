@@ -19,6 +19,11 @@ public class AuthFilter implements Filter {
         String action = request.getParameter("action");
         HttpSession session = request.getSession(false); // do not create new session here
         boolean loggedIn = (session != null && session.getAttribute("user") != null);
+        
+        //  Prevent caching of protected pages
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
 
         // Handle signout
         if ("signout".equals(action)) {

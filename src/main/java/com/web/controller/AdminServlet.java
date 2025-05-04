@@ -1,7 +1,7 @@
 package com.web.controller;
 
 import com.web.DAO.AdminDAO;
-import com.webmodel.House;
+import com.webmodel.Property;
 import com.webmodel.Statistics;
 import com.webmodel.User;
 
@@ -60,7 +60,7 @@ public class AdminServlet extends HttpServlet {
 
         // Fetch dashboard statistics and recent properties
         Statistics stats = adminDAO.getDashboardStatistics();
-        List<House> recentProperties = adminDAO.getRecentProperties();
+        List<Property> recentProperties = adminDAO.getRecentProperties();
 
         // Set attributes for use in JSP
         request.setAttribute("stats", stats);
