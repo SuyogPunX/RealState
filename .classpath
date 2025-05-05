@@ -23,5 +23,20 @@
 			<attribute name="javadoc_location" value="https://jakarta.ee/specifications/servlet/6.0/apidocs/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/ACER/Downloads/jstl-1.2 (1).jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/ACER/Downloads/jakarta.servlet.jsp.jstl-3.0.1.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/ACER/Downloads/jakarta.servlet.jsp.jstl-api-3.0.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    String currentPage = request.getRequestURI();
+String currentPage = request.getRequestURI();
 %>
 <!DOCTYPE html>
 <html>
@@ -8,45 +8,183 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-    .active a {
-        font-weight: bold;
-        color: #007BFF; /* Highlight color */
-    }
+.active a {
+    font-weight: bold;
+    color: #007BFF; /* Highlight color */
+}
+
+/* Profile popup styles */
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-icon {
+    cursor: pointer;
+    font-size: 24px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    min-width: 250px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.profile-dropdown-content.show {
+    display: block;
+}
+
+.profile-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.profile-detail {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.detail-icon {
+    margin-right: 10px;
+    color: #666;
+    width: 16px;
+    text-align: center;
+}
+
+.signout-btn {
+    margin-top: 15px;
+    width: 100%;
+    padding: 8px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.signout-btn:hover {
+    background-color: #d32f2f;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-icon {
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
 <header>
-    <a href="${pageContext.request.contextPath}/pages/home.jsp" class="logo">
-        <div class="logo-container">
-            <img src="https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744336330/sang_iefgzk.png" alt="Sangri-La Estates" class="logo-icon" />
-            <span>Sangri-La Estates</span>
-        </div>
-    </a>
-
-    <nav>
-        <ul>
-            <li class="<%= currentPage.endsWith("home.jsp") ? "active" : "" %>">
-                <a href="${pageContext.request.contextPath}/pages/home.jsp">Home</a>
-            </li>
-            <li class="<%= currentPage.endsWith("booking.jsp") ? "active" : "" %>">
-                <a href="${pageContext.request.contextPath}/pages/booking.jsp">Booking</a>
-            </li>
-            <li class="<%= currentPage.endsWith("aboutus.jsp") ? "active" : "" %>">
-                <a href="${pageContext.request.contextPath}/pages/aboutus.jsp">About Us</a>
-            </li>
-            <li class="<%= currentPage.endsWith("contactus.jsp") ? "active" : "" %>">
-                <a href="${pageContext.request.contextPath}/pages/contactus.jsp">Contact</a>
-            </li>
-        </ul>
-    </nav>
-
-    <div class="header-actions">
-        <div class="header-icon">📍</div>
-        <div class="header-icon">🛒</div>
-        <a href="${pageContext.request.contextPath}/pages/home.jsp?action=signout">
-            <button class="btn btn-outline">Sign Out</button>
-        </a>
+<a href="${pageContext.request.contextPath}/pages/home.jsp" class="logo">
+    <div class="logo-container">
+        <img src="https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744336330/sang_iefgzk.png" alt="Sangri-La Estates" class="logo-icon" />
+        <span>Sangri-La Estates</span>
     </div>
+</a>
+
+<nav>
+    <ul>
+        <li class="<%= currentPage.endsWith("home.jsp") ? "active" : "" %>">
+            <a href="${pageContext.request.contextPath}/pages/home.jsp">Home</a>
+        </li>
+        <li class="<%= currentPage.endsWith("booking.jsp") ? "active" : "" %>">
+            <a href="${pageContext.request.contextPath}/pages/booking.jsp">Booking</a>
+        </li>
+        <li class="<%= currentPage.endsWith("aboutus.jsp") ? "active" : "" %>">
+            <a href="${pageContext.request.contextPath}/pages/aboutus.jsp">About Us</a>
+        </li>
+        <li class="<%= currentPage.endsWith("contactus.jsp") ? "active" : "" %>">
+            <a href="${pageContext.request.contextPath}/pages/contactus.jsp">Contact</a>
+        </li>
+    </ul>
+</nav>
+
+<div class="header-actions">
+    <div class="header-icon">🛒</div>
+    <div class="profile-dropdown">
+        <div class="profile-icon" onclick="toggleProfileDropdown()">👤</div>
+        <div class="profile-dropdown-content" id="profileDropdown">
+            <% if(session != null && session.getAttribute("user") != null) { 
+                // Using dummy data for now - this will be replaced with actual data from backend
+                String userName = "John Doe";
+                String userEmail = "john.doe@example.com";
+                String userPhone = "+1 (555) 123-4567";
+                String userAddress = "123 Sangri-La Street, Paradise City";
+                
+                // Later this will be replaced with:
+                // com.your.package.User user = (com.your.package.User) session.getAttribute("user");
+                // String userName = user.getName();
+                // etc.
+            %>
+                <div class="profile-header">User Profile</div>
+                <div class="profile-detail">
+                    <div class="detail-icon">👤</div>
+                    <div><%= userName %></div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-icon">✉️</div>
+                    <div><%= userEmail %></div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-icon">📞</div>
+                    <div><%= userPhone %></div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-icon">🏠</div>
+                    <div><%= userAddress %></div>
+                </div>
+                <a href="${pageContext.request.contextPath}/pages/home.jsp?action=signout">
+                    <button class="signout-btn">Sign Out</button>
+                </a>
+            <% } else { %>
+                <div class="profile-header">Welcome!</div>
+                <div class="profile-detail">You are not logged in.</div>
+                <a href="${pageContext.request.contextPath}/pages/login.jsp">
+                    <button class="signout-btn" style="background-color: #007BFF;">Log In</button>
+                </a>
+            <% } %>
+        </div>
+    </div>
+</div>
 </header>
+
+<script>
+function toggleProfileDropdown() {
+    document.getElementById("profileDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.profile-icon')) {
+        var dropdowns = document.getElementsByClassName("profile-dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+</script>
 </body>
 </html>
