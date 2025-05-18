@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy Properties - Shangri-La Estates</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buy.css">
-         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buypage.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buypage.css">
 </head>
 <body>
     <!-- Header -->
@@ -19,28 +19,27 @@
         <h1>Find Your Dream Property in Nepal</h1>
         <p>Browse through our extensive collection of properties for sale across Nepal.</p>
         
-        <form action="${pageContext.request.contextPath}/property" method="get" id="searchForm">
+        <form action="${pageContext.request.contextPath}/propertyServlet" method="get" id="searchForm">
             <div class="search-container">
-            
                 <div class="search-input">
                     <label>Location</label>
                     <select name="location">
-                        <option value="All of Nepal" ${location == 'All of Nepal' || location == null ? 'selected' : ''}>All of Nepal</option>
-                        <option value="Kathmandu" ${location == 'Kathmandu' ? 'selected' : ''}>Kathmandu</option>
-                        <option value="Pokhara" ${location == 'Pokhara' ? 'selected' : ''}>Pokhara</option>
-                        <option value="Lalitpur" ${location == 'Lalitpur' ? 'selected' : ''}>Lalitpur</option>
-                        <option value="Bhaktapur" ${location == 'Bhaktapur' ? 'selected' : ''}>Bhaktapur</option>
-                        <option value="Chitwan" ${location == 'Chitwan' ? 'selected' : ''}>Chitwan</option>
+                        <option value="All of Nepal" ${param.location == 'All of Nepal' || param.location == null ? 'selected' : ''}>All of Nepal</option>
+                        <option value="Kathmandu" ${param.location == 'Kathmandu' ? 'selected' : ''}>Kathmandu</option>
+                        <option value="Pokhara" ${param.location == 'Pokhara' ? 'selected' : ''}>Pokhara</option>
+                        <option value="Lalitpur" ${param.location == 'Lalitpur' ? 'selected' : ''}>Lalitpur</option>
+                        <option value="Bhaktapur" ${param.location == 'Bhaktapur' ? 'selected' : ''}>Bhaktapur</option>
+                        <option value="Chitwan" ${param.location == 'Chitwan' ? 'selected' : ''}>Chitwan</option>
                     </select>
                 </div>
                 <div class="search-input">
                     <label>Property Type</label>
                     <select name="propertyType">
-                        <option value="All Types" ${propertyType == 'All Types' || propertyType == null ? 'selected' : ''}>All Types</option>
-                        <option value="House" ${propertyType == 'House' ? 'selected' : ''}>House</option>
-                        <option value="Apartment" ${propertyType == 'Apartment' ? 'selected' : ''}>Apartment</option>
-                        <option value="Land" ${propertyType == 'Land' ? 'selected' : ''}>Land</option>
-                        <option value="Commercial" ${propertyType == 'Commercial' ? 'selected' : ''}>Commercial</option>
+                        <option value="All Types" ${param.propertyType == 'All Types' || param.propertyType == null ? 'selected' : ''}>All Types</option>
+                        <option value="House" ${param.propertyType == 'House' ? 'selected' : ''}>House</option>
+                        <option value="Apartment" ${param.propertyType == 'Apartment' ? 'selected' : ''}>Apartment</option>
+                        <option value="Land" ${param.propertyType == 'Land' ? 'selected' : ''}>Land</option>
+                        <option value="Commercial" ${param.propertyType == 'Commercial' ? 'selected' : ''}>Commercial</option>
                     </select>
                 </div>
                 <div class="search-input">
@@ -65,35 +64,39 @@
         <div class="filter-sidebar">
             <h3 class="filter-title">Filter Properties</h3>
             
-            <form action="${pageContext.request.contextPath}/property" method="get" id="filterForm">
+            <form action="${pageContext.request.contextPath}/propertyServlet" method="get" id="filterForm">
                 <!-- Hidden inputs to preserve search values -->
-                <input type="hidden" name="location" value="${location}">
-                <input type="hidden" name="propertyType" value="${propertyType}">
+                <input type="hidden" name="location" value="${param.location}">
+                <input type="hidden" name="sort" id="sortInput" value="${param.sortBy}">
                 
                 <div class="filter-group">
                     <label class="filter-label">Price Range</label>
                     <div class="price-inputs">
-                        <input type="text" name="minPrice" placeholder="Min" class="filter-input" value="${minPrice}">
-                        <input type="text" name="maxPrice" placeholder="Max" class="filter-input" value="${maxPrice}">
+                        <input type="text" name="minPrice" placeholder="Min" class="filter-input" value="${param.minPrice}">
+                        <input type="text" name="maxPrice" placeholder="Max" class="filter-input" value="${param.maxPrice}">
                     </div>
                 </div>
                 
                 <div class="filter-group">
                     <label class="filter-label">Property Type</label>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="house" name="propertyType" value="House" ${propertyType == 'House' ? 'checked' : ''}> 
+                        <input type="radio" id="all-types" name="propertyType" value="All Types" ${param.propertyType == 'All Types' || param.propertyType == null ? 'checked' : ''}> 
+                        <label for="all-types">All Types</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="radio" id="house" name="propertyType" value="House" ${param.propertyType == 'House' ? 'checked' : ''}> 
                         <label for="house">House</label>
                     </div>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="apartment" name="propertyType" value="Apartment" ${propertyType == 'Apartment' ? 'checked' : ''}> 
+                        <input type="radio" id="apartment" name="propertyType" value="Apartment" ${param.propertyType == 'Apartment' ? 'checked' : ''}> 
                         <label for="apartment">Apartment</label>
                     </div>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="land" name="propertyType" value="Land" ${propertyType == 'Land' ? 'checked' : ''}>
+                        <input type="radio" id="land" name="propertyType" value="Land" ${param.propertyType == 'Land' ? 'checked' : ''}>
                         <label for="land">Land</label>
                     </div>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="commercial" name="propertyType" value="Commercial" ${propertyType == 'Commercial' ? 'checked' : ''}>
+                        <input type="radio" id="commercial" name="propertyType" value="Commercial" ${param.propertyType == 'Commercial' ? 'checked' : ''}>
                         <label for="commercial">Commercial</label>
                     </div>
                 </div>
@@ -101,19 +104,23 @@
                 <div class="filter-group">
                     <label class="filter-label">Bedrooms</label>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="bed1" name="bedrooms" value="bed1" ${minBedrooms == 1 ? 'checked' : ''}> 
+                        <input type="radio" id="bed-all" name="bedrooms" value="" ${param.bedrooms == null ? 'checked' : ''}> 
+                        <label for="bed-all">Any</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="radio" id="bed1" name="bedrooms" value="bed1" ${param.bedrooms == 'bed1' ? 'checked' : ''}> 
                         <label for="bed1">1 Bedroom</label>
                     </div>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="bed2" name="bedrooms" value="bed2" ${minBedrooms == 2 ? 'checked' : ''}> 
+                        <input type="radio" id="bed2" name="bedrooms" value="bed2" ${param.bedrooms == 'bed2' ? 'checked' : ''}> 
                         <label for="bed2">2 Bedrooms</label>
                     </div>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="bed3" name="bedrooms" value="bed3" ${minBedrooms == 3 ? 'checked' : ''}>
+                        <input type="radio" id="bed3" name="bedrooms" value="bed3" ${param.bedrooms == 'bed3' ? 'checked' : ''}>
                         <label for="bed3">3 Bedrooms</label>
                     </div>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="bed4" name="bedrooms" value="bed4" ${minBedrooms == 4 ? 'checked' : ''}>
+                        <input type="radio" id="bed4" name="bedrooms" value="bed4" ${param.bedrooms == 'bed4' ? 'checked' : ''}>
                         <label for="bed4">4+ Bedrooms</label>
                     </div>
                 </div>
@@ -121,15 +128,19 @@
                 <div class="filter-group">
                     <label class="filter-label">Bathrooms</label>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="bath1" name="bathrooms" value="bath1" ${minBathrooms == 1 ? 'checked' : ''}> 
+                        <input type="radio" id="bath-all" name="bathrooms" value="" ${param.bathrooms == null ? 'checked' : ''}> 
+                        <label for="bath-all">Any</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="radio" id="bath1" name="bathrooms" value="bath1" ${param.bathrooms == 'bath1' ? 'checked' : ''}> 
                         <label for="bath1">1 Bathroom</label>
                     </div>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="bath2" name="bathrooms" value="bath2" ${minBathrooms == 2 ? 'checked' : ''}> 
+                        <input type="radio" id="bath2" name="bathrooms" value="bath2" ${param.bathrooms == 'bath2' ? 'checked' : ''}> 
                         <label for="bath2">2 Bathrooms</label>
                     </div>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="bath3" name="bathrooms" value="bath3" ${minBathrooms == 3 ? 'checked' : ''}>
+                        <input type="radio" id="bath3" name="bathrooms" value="bath3" ${param.bathrooms == 'bath3' ? 'checked' : ''}>
                         <label for="bath3">3+ Bathrooms</label>
                     </div>
                 </div>
@@ -137,8 +148,8 @@
                 <div class="filter-group">
                     <label class="filter-label">Area (Sq Ft)</label>
                     <div class="price-inputs">
-                        <input type="text" name="minArea" placeholder="Min" class="filter-input" value="${minArea}">
-                        <input type="text" name="maxArea" placeholder="Max" class="filter-input" value="${maxArea}">
+                        <input type="text" name="minArea" placeholder="Min" class="filter-input" value="${param.minArea}">
+                        <input type="text" name="maxArea" placeholder="Max" class="filter-input" value="${param.maxArea}">
                     </div>
                 </div>
                 
@@ -152,40 +163,41 @@
             <div class="sort-container">
                 <div class="property-count">Showing ${properties.size()} of ${totalProperties} properties</div>
                 <select class="sort-select" id="sortSelect" onchange="changeSort()">
-                    <option value="newest" ${sortBy == 'newest' || sortBy == null ? 'selected' : ''}>Sort by: Newest</option>
-                    <option value="priceAsc" ${sortBy == 'priceAsc' ? 'selected' : ''}>Price: Low to High</option>
-                    <option value="priceDesc" ${sortBy == 'priceDesc' ? 'selected' : ''}>Price: High to Low</option>
-                    <option value="areaAsc" ${sortBy == 'areaAsc' ? 'selected' : ''}>Area: Low to High</option>
-                    <option value="areaDesc" ${sortBy == 'areaDesc' ? 'selected' : ''}>Area: High to Low</option>
+                    <option value="newest" ${param.sort == 'newest' || param.sort == null ? 'selected' : ''}>Sort by: Newest</option>
+                    <option value="priceAsc" ${param.sort == 'priceAsc' ? 'selected' : ''}>Price: Low to High</option>
+                    <option value="priceDesc" ${param.sort == 'priceDesc' ? 'selected' : ''}>Price: High to Low</option>
+                    <option value="areaAsc" ${param.sort == 'areaAsc' ? 'selected' : ''}>Area: Low to High</option>
+                    <option value="areaDesc" ${param.sort == 'areaDesc' ? 'selected' : ''}>Area: High to Low</option>
                 </select>
-                <input type="hidden" name="sort" id="sortInput" value="${sortBy}" form="filterForm">
             </div>
             
             <div class="property-grid">
-                <c:forEach var="property" items="${properties}">
-                    <div class="property-card">
-                        <div class="property-image" style="background-image: url('${not empty property.primaryImagePath ? property.primaryImagePath : '/api/placeholder/350/200'}')">
-                            <div class="property-tag">For Sale</div>
-                        </div>
-                        <div class="property-info">
-                            <h3 class="property-title">${property.title}</h3>
-                            <div class="property-location">📍 ${property.location}</div>
-                            <div class="property-price">₨ ${property.formattedPrice}</div>
-                            <div class="property-details">
-                                <c:if test="${property.bedrooms > 0}">
-                                    <span class="property-detail">${property.bedrooms} Beds</span>
-                                </c:if>
-                                <c:if test="${property.bathrooms > 0}">
-                                    <span class="property-detail">${property.bathrooms} Baths</span>
-                                </c:if>
-                                <span class="property-detail">${property.areaSqft} Sq Ft</span>
+                <c:if test="${not empty properties}">
+                    <c:forEach var="property" items="${properties}">
+                        <div class="property-card">
+                            <div class="property-image" style="background-image: url('${not empty property.primaryImagePath ? property.primaryImagePath : '/api/placeholder/350/200'}')">
+                                <div class="property-tag">For Sale</div>
                             </div>
-                            <div class="property-type">${property.title.contains('Apartment') ? 'Apartment' : 
-                                                     property.title.contains('Land') ? 'Land' : 
-                                                     property.title.contains('Commercial') ? 'Commercial' : 'Residential'}</div>
+                            <div class="property-info">
+                                <h3 class="property-title">${property.title}</h3>
+                                <div class="property-location">📍 ${property.location}</div>
+                                <div class="property-price">₨ ${property.formattedPrice}</div>
+                                <div class="property-details">
+                                    <c:if test="${property.bedrooms > 0}">
+                                        <span class="property-detail">${property.bedrooms} Beds</span>
+                                    </c:if>
+                                    <c:if test="${property.bathrooms > 0}">
+                                        <span class="property-detail">${property.bathrooms} Baths</span>
+                                    </c:if>
+                                    <span class="property-detail">${property.areaSqft} Sq Ft</span>
+                                </div>
+                                <div class="property-type">${property.title.contains('Apartment') ? 'Apartment' : 
+                                                         property.title.contains('Land') ? 'Land' : 
+                                                         property.title.contains('Commercial') ? 'Commercial' : 'Residential'}</div>
+                            </div>
                         </div>
-                    </div>
-                </c:forEach>
+                    </c:forEach>
+                </c:if>
                 
                 <!-- If no properties found -->
                 <c:if test="${empty properties}">
@@ -200,12 +212,12 @@
             <c:if test="${totalPages > 1}">
                 <div class="pagination">
                     <c:forEach begin="1" end="${totalPages > 5 ? 5 : totalPages}" var="i">
-                        <a href="${pageContext.request.contextPath}/property?page=${i}&location=${location}&propertyType=${propertyType}&minPrice=${minPrice}&maxPrice=${maxPrice}&minArea=${minArea}&maxArea=${maxArea}&sort=${sortBy}" 
+                        <a href="${pageContext.request.contextPath}/propertyServlet?page=${i}&location=${param.location}&propertyType=${param.propertyType}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&minArea=${param.minArea}&maxArea=${param.maxArea}&sort=${param.sort}" 
                            class="pagination-item ${currentPage == i ? 'active' : ''}">${i}</a>
                     </c:forEach>
                     
                     <c:if test="${currentPage < totalPages}">
-                        <a href="${pageContext.request.contextPath}/property?page=${currentPage + 1}&location=${location}&propertyType=${propertyType}&minPrice=${minPrice}&maxPrice=${maxPrice}&minArea=${minArea}&maxArea=${maxArea}&sort=${sortBy}" 
+                        <a href="${pageContext.request.contextPath}/propertyServlet?page=${currentPage + 1}&location=${param.location}&propertyType=${param.propertyType}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&minArea=${param.minArea}&maxArea=${param.maxArea}&sort=${param.sort}" 
                            class="pagination-item">→</a>
                     </c:if>
                 </div>
@@ -219,13 +231,12 @@
     <script>
         function changeSort() {
             const sortSelect = document.getElementById('sortSelect');
-            const sortInput = document.getElementById('sortInput');
-            sortInput.value = sortSelect.value;
+            document.getElementById('sortInput').value = sortSelect.value;
             document.getElementById('filterForm').submit();
         }
         
         function resetFilters() {
-            window.location.href = "${pageContext.request.contextPath}/property";
+            window.location.href = "${pageContext.request.contextPath}/propertyServlet";
         }
         
         // Handle the budget range selection
@@ -264,50 +275,9 @@
                 });
             }
             
-            // Handle property type checkboxes (only one should be selected)
-            const propertyTypeCheckboxes = document.querySelectorAll('input[name="propertyType"]');
-            propertyTypeCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        // Uncheck other property type checkboxes
-                        propertyTypeCheckboxes.forEach(box => {
-                            if (box !== this) {
-                                box.checked = false;
-                            }
-                        });
-                    }
-                });
-            });
-            
-            // Handle bedroom checkboxes (only one should be selected)
-            const bedroomCheckboxes = document.querySelectorAll('input[name="bedrooms"]');
-            bedroomCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        // Uncheck other bedroom checkboxes
-                        bedroomCheckboxes.forEach(box => {
-                            if (box !== this) {
-                                box.checked = false;
-                            }
-                        });
-                    }
-                });
-            });
-            
-            // Handle bathroom checkboxes (only one should be selected)
-            const bathroomCheckboxes = document.querySelectorAll('input[name="bathrooms"]');
-            bathroomCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        // Uncheck other bathroom checkboxes
-                        bathroomCheckboxes.forEach(box => {
-                            if (box !== this) {
-                                box.checked = false;
-                            }
-                        });
-                    }
-                });
-            });
+            // Debug - log if properties are available
+            console.log('Properties count: ${properties.size()}');
+            console.log('Total properties: ${totalProperties}');
         });
     </script>
 </body>

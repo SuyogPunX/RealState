@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,28 +21,22 @@
                 </div>
             </div>
             
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/pages/admin.jsp" class="nav-link active">
-                        <span>📊</span> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/pages/properties.jsp" class="nav-link">
-                        <span>🏠</span> Properties
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/pages/users.jsp" class="nav-link">
-                        <span>👥</span> Users
-                    </a>
-                </li>
-            </ul>
+           <a href="${pageContext.request.contextPath}/admin" class="nav-link active">
+			    <span>📊</span> Dashboard
+			</a>
+			<a href="${pageContext.request.contextPath}/admin?action=properties" class="nav-link">
+			    <span>🏠</span> Properties
+			</a>
+			<a href="${pageContext.request.contextPath}/admin?action=users" class="nav-link">
+			    <span>👥</span> Users
+			</a>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
+        
             <!-- Header -->
+            
             <div class="page-header">
                 <div class="header-title">
                     <h1>Dashboard</h1>

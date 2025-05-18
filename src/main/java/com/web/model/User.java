@@ -1,4 +1,4 @@
-package com.webmodel;
+package com.web.model;
 
 import java.sql.Timestamp;
 
@@ -6,7 +6,7 @@ public class User {
     private int id;
     private String fullName;
     private String phone;
-    private String dob;
+    private Timestamp dob;
     private String email;
     private String address;
     private String password;
@@ -16,7 +16,7 @@ public class User {
     
     
 
-    public User(int id, String fullName, String phone, String dob, String email, String address, String password,
+    public User(int id, String fullName, String phone, Timestamp dob, String email, String address, String password,
 			UserRole role, Timestamp createdAt, Timestamp lastLogin) {
 		super();
 		this.id = id;
@@ -60,11 +60,11 @@ public class User {
         this.phone = phone;
     }
 
-    public String getDob() {
+    public Timestamp getDob() {
         return dob;
     }
 
-    public void setDob(String dob) {
+    public void setDob(Timestamp dob) {
         this.dob = dob;
     }
 

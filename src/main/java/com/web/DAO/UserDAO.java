@@ -11,9 +11,9 @@ import java.time.LocalDate;
 import org.apache.tomcat.jakartaee.bcel.classfile.ClassFormatException;
 
 import com.web.database.DatabaseConnection;
+import com.web.model.User;
+import com.web.model.UserRole;
 import com.web.utility.EncryptDecrypt;
-import com.webmodel.User;
-import com.webmodel.UserRole;
 
 public class UserDAO {
 	
@@ -46,7 +46,7 @@ public class UserDAO {
 					user=new User();
 					user.setId(rs.getInt("user_id"));
 					user.setFullName(rs.getString("name"));
-					user.setDob(rs.getString("dob"));
+					user.setDob(rs.getTimestamp("dob"));
 					user.setAddress(rs.getString("address"));
 					user.setEmail(rs.getString("email"));
 					user.setPassword(rs.getString("password"));

@@ -343,10 +343,12 @@ footer {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .property-grid, 
-    .testimonial-grid {
-        grid-template-columns: 1fr;
-    }
+    .property-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* This makes 2 columns */
+    gap: 20px; /* spacing between cards */
+    margin-top: 20px;
+	}
 
     .cta-buttons {
         flex-direction: column;

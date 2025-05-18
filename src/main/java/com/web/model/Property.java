@@ -1,5 +1,6 @@
-package com.webmodel;
+package com.web.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ public class Property {
     private int propertyId;
     private String title;
     private String description;
+    private String propertyType;
     private String location;
     private double price;
     private double areaSqft;
@@ -15,7 +17,7 @@ public class Property {
     private int bathrooms;
     private boolean kitchen;
     private boolean available;
-    private String createdAt;
+    private Timestamp createdAt;
     private int yearBuilt;
     private String furnishing;
     private String ownerName;
@@ -28,8 +30,16 @@ public class Property {
     public Property() {
         this.imagePaths = new ArrayList<>();
     }
+    
 
-    // Standard getters and setters
+    public String getPropertyType() {
+		return propertyType;
+	}
+	public void setPropertyType(String propertyType) {
+		this.propertyType = propertyType;
+	}
+
+	// Standard getters and setters
     public int getPropertyId() {
         return propertyId;
     }
@@ -118,11 +128,11 @@ public class Property {
         this.available = available;
     }
 
-    public String getCreatedAt() {
+    public  Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 

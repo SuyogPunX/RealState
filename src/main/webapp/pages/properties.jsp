@@ -1,13 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Properties - Shangri-La Estates</title>
-    <link rel="stylesheet" href="../css/properties.css">
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/properties.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
 </head>
 <body>
     <div class="container">
@@ -15,8 +18,8 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo-container">
-                    <img src="https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744336330/sang_iefgzk.png" alt="Sangri-La Estates" class="logo-icon" />
-                    <span>Sangri-La Estates</span>
+                    <img src="https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744336330/sang_iefgzk.png " alt="Shangri-La Estates" class="logo-icon" />
+                    <span>Shangri-La Estates</span>
                 </div>
             </div>
             <ul class="nav-menu">
@@ -26,18 +29,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/pages/properties.jsp" class="nav-link active">
+                    <a href="${pageContext.request.contextPath}/properties" class="nav-link active">
                         <span>🏠</span> Properties
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/pages/users.jsp" class="nav-link">
+                    <a href="${pageContext.request.contextPath}/users" class="nav-link">
                         <span>👥</span> Users
                     </a>
                 </li>
             </ul>
         </div>
-        
+
         <!-- Main Content -->
         <div class="main-content">
             <!-- Header -->
@@ -51,74 +54,76 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Property Filters -->
+
+            <!-- Filter Section -->
             <div class="card filter-card">
                 <div class="filter-header">
                     <h2>Property Filters</h2>
                 </div>
                 <div class="filter-body">
-                    <div class="filter-row">
-                        <div class="filter-item">
-                            <label>Property Type</label>
-                            <select class="form-select">
-                                <option value="">All Types</option>
-                                <option value="apartment">Apartment</option>
-                                <option value="house">House</option>
-                                <option value="land">Land</option>
-                                <option value="commercial">Commercial</option>
-                            </select>
-                        </div>
-                        <div class="filter-item">
-                            <label>Location</label>
-                            <select class="form-select">
-                                <option value="">All Locations</option>
-                                <option value="kathmandu">Kathmandu</option>
-                                <option value="lalitpur">Lalitpur</option>
-                                <option value="bhaktapur">Bhaktapur</option>
-                                <option value="pokhara">Pokhara</option>
-                                <option value="biratnagar">Biratnagar</option>
-                            </select>
-                        </div>
-                        <div class="filter-item">
-                            <label>Price Range</label>
-                            <div class="price-range">
-                                <input type="number" placeholder="Min" class="form-input">
-                                <span>-</span>
-                                <input type="number" placeholder="Max" class="form-input">
+                    <form action="${pageContext.request.contextPath}/adminproperties" method="get" id="filterForm">
+                        <div class="filter-row">
+                            <!-- Property Type -->
+                            <div class="filter-item">
+                                <label for="propertyType">Property Type</label>
+                                <select name="propertyType" id="propertyType" class="form-select">
+                                    <option value="">All Types</option>
+                                    <option value="Apartment" ${param.propertyType == 'Apartment' ? 'selected' : ''}>Apartment</option>
+                                    <option value="House" ${param.propertyType == 'House' ? 'selected' : ''}>House</option>
+                                    <option value="Land" ${param.propertyType == 'Land' ? 'selected' : ''}>Land</option>
+                                    <option value="Commercial" ${param.propertyType == 'Commercial' ? 'selected' : ''}>Commercial</option>
+                                    <option value="Villa" ${param.propertyType == 'Villa' ? 'selected' : ''}>Villa</option>
+                                    <option value="Restaurant" ${param.propertyType == 'Restaurant' ? 'selected' : ''}>Restaurant</option>
+                                </select>
                             </div>
+
+                            <!-- Location -->
+                            <div class="filter-item">
+                                <label for="location">Location</label>
+                                <select name="location" id="location" class="form-select">
+                                    <option value="">All Locations</option>
+                                    <option value="Kathmandu" ${param.location == 'Kathmandu' ? 'selected' : ''}>Kathmandu</option>
+                                    <option value="Pokhara" ${param.location == 'Pokhara' ? 'selected' : ''}>Pokhara</option>
+                                    <option value="Lalitpur" ${param.location == 'Lalitpur' ? 'selected' : ''}>Lalitpur</option>
+                                    <option value="Bhaktapur" ${param.location == 'Bhaktapur' ? 'selected' : ''}>Bhaktapur</option>
+                                    <option value="Biratnagar" ${param.location == 'Biratnagar' ? 'selected' : ''}>Biratnagar</option>
+                                </select>
+                            </div>
+
+                            <!-- Price Range -->
+                            <div class="filter-item">
+                                <label>Price Range</label>
+                                <div class="price-range">
+                                    <input type="number" name="minPrice" placeholder="Min" class="form-input" value="${param.minPrice}">
+                                    <span>-</span>
+                                    <input type="number" name="maxPrice" placeholder="Max" class="form-input" value="${param.maxPrice}">
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+
+
+                        <div class="filter-actions">
+                            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                            <button type="button" class="btn btn-outline" onclick="resetFilters()">Reset</button>
                         </div>
-                        <div class="filter-item">
-                            <label>Status</label>
-                            <select class="form-select">
-                                <option value="">All Status</option>
-                                <option value="sale">For Sale</option>
-                                <option value="rent">For Rent</option>
-                                <option value="pending">Pending</option>
-                                <option value="active">Active</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="filter-actions">
-                        <button class="btn btn-outline">Reset</button>
-                        <button class="btn btn-primary">Apply Filters</button>
-                    </div>
+                    </form>
                 </div>
             </div>
-            
-            <!-- Property List -->
+
+            <!-- Table View -->
             <div class="table-container">
                 <div class="table-header">
                     <div class="table-title">All Properties</div>
                     <div class="table-actions">
                         <div class="search-box">
                             <span>🔍</span>
-                            <input type="text" placeholder="Search properties...">
+                            <input type="text" placeholder="Search properties..." onkeyup="filterTable(this.value)">
                         </div>
-                        <button class="btn btn-primary" id="addPropertyBtn">+ Add Property</button>
+                        <button class="btn btn-primary" id="addPropertyBtn" onclick="openModal()">+ Add Property</button>
                     </div>
                 </div>
-                
+
                 <table>
                     <thead>
                         <tr>
@@ -132,302 +137,257 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="property-item">
-                                    <div class="property-image">
-                                        <img src="/api/placeholder/60/40" alt="Luxury Apartment">
-                                    </div>
-                                    <div>Luxury Apartment in Kathmandu</div>
-                                </div>
-                            </td>
-                            <td>Apartment</td>
-                            <td>Baluwatar, Kathmandu</td>
-                            <td>Rs. 55,000,000</td>
-                            <td><span class="badge badge-sale">For Sale</span></td>
-                            <td>10 Feb 2025</td>
-                            <td><span class="badge badge-featured">Featured</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view-btn" title="View Details">👁️</button>
-                                    <button class="btn-icon edit-btn" title="Edit">✏️</button>
-                                    <button class="btn-icon delete-btn" title="Delete">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="property-item">
-                                    <div class="property-image">
-                                        <img src="/api/placeholder/60/40" alt="City Apartment">
-                                    </div>
-                                    <div>City Apartment</div>
-                                </div>
-                            </td>
-                            <td>Apartment</td>
-                            <td>Thamel, Kathmandu</td>
-                            <td>Rs. 125,000/month</td>
-                            <td><span class="badge badge-rent">For Rent</span></td>
-                            <td>15 Mar 2025</td>
-                            <td><span class="badge">-</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view-btn" title="View Details">👁️</button>
-                                    <button class="btn-icon edit-btn" title="Edit">✏️</button>
-                                    <button class="btn-icon delete-btn" title="Delete">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="property-item">
-                                    <div class="property-image">
-                                        <img src="/api/placeholder/60/40" alt="Commercial Land">
-                                    </div>
-                                    <div>Commercial Land</div>
-                                </div>
-                            </td>
-                            <td>Land</td>
-                            <td>Biratnagar</td>
-                            <td>Rs. 35,000,000</td>
-                            <td><span class="badge badge-pending">Pending</span></td>
-                            <td>28 Feb 2025</td>
-                            <td><span class="badge">-</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view-btn" title="View Details">👁️</button>
-                                    <button class="btn-icon edit-btn" title="Edit">✏️</button>
-                                    <button class="btn-icon delete-btn" title="Delete">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="property-item">
-                                    <div class="property-image">
-                                        <img src="/api/placeholder/60/40" alt="Modern House">
-                                    </div>
-                                    <div>Modern House in Lalitpur</div>
-                                </div>
-                            </td>
-                            <td>House</td>
-                            <td>Lalitpur</td>
-                            <td>Rs. 42,800,000</td>
-                            <td><span class="badge badge-active">Active</span></td>
-                            <td>03 Mar 2025</td>
-                            <td><span class="badge badge-featured">Featured</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view-btn" title="View Details">👁️</button>
-                                    <button class="btn-icon edit-btn" title="Edit">✏️</button>
-                                    <button class="btn-icon delete-btn" title="Delete">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="property-item">
-                                    <div class="property-image">
-                                        <img src="/api/placeholder/60/40" alt="Lakeside Restaurant">
-                                    </div>
-                                    <div>Lakeside Restaurant</div>
-                                </div>
-                            </td>
-                            <td>Restaurant</td>
-                            <td>Lakeside, Pokhara</td>
-                            <td>Rs. 18,500,000</td>
-                            <td><span class="badge badge-sale">For Sale</span></td>
-                            <td>21 Mar 2025</td>
-                            <td><span class="badge">-</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view-btn" title="View Details">👁️</button>
-                                    <button class="btn-icon edit-btn" title="Edit">✏️</button>
-                                    <button class="btn-icon delete-btn" title="Delete">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="property-item">
-                                    <div class="property-image">
-                                        <img src="/api/placeholder/60/40" alt="Mountain View Villa">
-                                    </div>
-                                    <div>Mountain View Villa</div>
-                                </div>
-                            </td>
-                            <td>Villa</td>
-                            <td>Budhanilkantha, Kathmandu</td>
-                            <td>Rs. 78,500,000</td>
-                            <td><span class="badge badge-sale">For Sale</span></td>
-                            <td>18 Jan 2025</td>
-                            <td><span class="badge badge-featured">Featured</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view-btn" title="View Details">👁️</button>
-                                    <button class="btn-icon edit-btn" title="Edit">✏️</button>
-                                    <button class="btn-icon delete-btn" title="Delete">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="property-item">
-                                    <div class="property-image">
-                                        <img src="/api/placeholder/60/40" alt="Office Space">
-                                    </div>
-                                    <div>Prime Office Space</div>
-                                </div>
-                            </td>
-                            <td>Commercial</td>
-                            <td>Durbar Marg, Kathmandu</td>
-                            <td>Rs. 250,000/month</td>
-                            <td><span class="badge badge-rent">For Rent</span></td>
-                            <td>05 Mar 2025</td>
-                            <td><span class="badge">-</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view-btn" title="View Details">👁️</button>
-                                    <button class="btn-icon edit-btn" title="Edit">✏️</button>
-                                    <button class="btn-icon delete-btn" title="Delete">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody id="propertyTableBody">
+                        <c:if test="${not empty properties}">
+                            <c:forEach var="property" items="${properties}" varStatus="loop">
+                                <tr>
+                                    <td>
+                                        <div class="property-item">
+                                            <div class="property-image">
+                                                <img src="${not empty property.primaryImagePath ? property.primaryImagePath : '/images/default.jpg'}" width="60" height="40" alt="${property.title}">
+                                            </div>
+                                            <div>${property.title}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${property.title.contains('Apartment')}">Apartment</c:when>
+                                            <c:when test="${property.title.contains('Land')}">Land</c:when>
+                                            <c:when test="${property.title.contains('Commercial')}">Commercial</c:when>
+                                            <c:when test="${property.title.contains('Villa')}">Villa</c:when>
+                                            <c:otherwise>House</c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>${property.location}</td>
+                                    <td>₨ ${property.formattedPrice}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${property.available}"><span class="badge badge-sale">For Sale</span></c:when>
+                                            <c:when test="${property.rent}"><span class="badge badge-rent">For Rent</span></c:when>
+                                            <c:when test="${property.pending}"><span class="badge badge-pending">Pending</span></c:when>
+                                            <c:otherwise><span class="badge badge-active">Active</span></c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>${property.createdAt}</td>
+                                    <td>
+                                        <c:if test="${property.featured}">
+                                            <span class="badge badge-featured">✔</span>
+                                        </c:if>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="${pageContext.request.contextPath}/viewProperty?id=${property.propertyId}">
+                                                <button class="btn-icon view-btn" title="View Details">👁️</button>
+                                            </a>
+                                            <a href="${pageContext.request.contextPath}/editProperty?id=${property.propertyId}">
+                                                <button class="btn-icon edit-btn" title="Edit">✏️</button>
+                                            </a>
+                                            <a href="${pageContext.request.contextPath}/deleteProperty?id=${property.propertyId}" onclick="return confirm('Are you sure?')">
+                                                <button class="btn-icon delete-btn" title="Delete">🗑️</button>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:if>
+                        <c:if test="${empty properties}">
+                            <tr>
+                                <td colspan="8" style="text-align:center;">No properties found.</td>
+                            </tr>
+                        </c:if>
                     </tbody>
                 </table>
-                
 
-                    <!-- Standardized Pagination -->
-            <div class="pagination">
-                <div class="pagination-info">
-                    Showing <span id="showing-start">1</span> to <span id="showing-end">5</span> of <span id="total-items">25</span> properties
-                </div>
-                    <div class="pagination-buttons" id="pagination">
-                        <!-- Pagination buttons will be populated by JavaScript -->
-                        <button class="pagination-btn" id="prev-btn" disabled><i class="fas fa-chevron-left"></i></button>
-                        <div class="pagination-numbers">
-                            <button class="pagination-btn active">1</button>
-                            <button class="pagination-btn">2</button>
-                            <button class="pagination-btn">3</button>
-                            <!-- More buttons will be dynamically added by JavaScript -->
+                <!-- Pagination -->
+                <c:if test="${totalPages > 1}">
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Showing ${startItem} to ${endItem} of ${totalProperties} properties
                         </div>
-                        <button class="pagination-btn" id="next-btn"><i class="fas fa-chevron-right"></i></button>
+                        <div class="pagination-buttons">
+                            <c:if test="${currentPage > 1}">
+                                <a href="?page=${currentPage - 1}&location=${param.location}&propertyType=${param.propertyType}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&sort=${param.sort}"
+                                   class="pagination-btn">&#8592; Prev</a>
+                            </c:if>
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <a href="?page=${i}&location=${param.location}&propertyType=${param.propertyType}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&sort=${param.sort}"
+                                   class="pagination-btn ${currentPage == i ? 'active' : ''}">${i}</a>
+                            </c:forEach>
+                            <c:if test="${currentPage < totalPages}">
+                                <a href="?page=${currentPage + 1}&location=${param.location}&propertyType=${param.propertyType}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&sort=${param.sort}"
+                                   class="pagination-btn">Next →</a>
+                            </c:if>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Add Property Modal -->
-            <div class="modal" id="propertyModal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>Add New Property</h2>
-                        <button class="close-btn">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="propertyForm">
-                            <div class="form-group">
-                                <label>Property Title</label>
-                                <input type="text" class="form-input" placeholder="Enter property title">
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Property Type</label>
-                                    <select class="form-select">
-                                        <option value="">Select Type</option>
-                                        <option value="apartment">Apartment</option>
-                                        <option value="house">House</option>
-                                        <option value="land">Land</option>
-                                        <option value="commercial">Commercial</option>
-                                        <option value="villa">Villa</option>
-                                        <option value="restaurant">Restaurant</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Status</label>
-                                    <select class="form-select">
-                                        <option value="">Select Status</option>
-                                        <option value="sale">For Sale</option>
-                                        <option value="rent">For Rent</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="active">Active</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Price (Rs.)</label>
-                                    <input type="number" class="form-input" placeholder="Enter price">
-                                </div>
-                                <div class="form-group">
-                                    <label>Rental (if applicable)</label>
-                                    <div class="rental-group">
-                                        <input type="number" class="form-input" placeholder="Enter rental amount">
-                                        <select class="form-select">
-                                            <option value="month">/month</option>
-                                            <option value="year">/year</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Location</label>
-                                    <input type="text" class="form-input" placeholder="Enter location">
-                                </div>
-                                <div class="form-group">
-                                    <label>City</label>
-                                    <select class="form-select">
-                                        <option value="">Select City</option>
-                                        <option value="kathmandu">Kathmandu</option>
-                                        <option value="lalitpur">Lalitpur</option>
-                                        <option value="bhaktapur">Bhaktapur</option>
-                                        <option value="pokhara">Pokhara</option>
-                                        <option value="biratnagar">Biratnagar</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Bedrooms</label>
-                                    <input type="number" class="form-input" placeholder="No. of bedrooms">
-                                </div>
-                                <div class="form-group">
-                                    <label>Bathrooms</label>
-                                    <input type="number" class="form-input" placeholder="No. of bathrooms">
-                                </div>
-                                <div class="form-group">
-                                    <label>Area (sq.ft)</label>
-                                    <input type="number" class="form-input" placeholder="Area in square feet">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea class="form-textarea" rows="4" placeholder="Enter property description"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Upload Images</label>
-                                <div class="file-upload">
-                                    <input type="file" id="propertyImages" multiple>
-                                    <label for="propertyImages">Choose Files</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="featured">
-                                    <label for="featured">Mark as Featured</label>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline">Cancel</button>
-                        <button class="btn btn-primary">Save Property</button>
-                    </div>
-                </div>
+                </c:if>
             </div>
         </div>
     </div>
-    <script src="${pageContext.request.contextPath}/js/properties.js"></script>
+
+    <!-- Add Property Modal -->
+<div class="modal" id="propertyModal" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Property</h2>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="propertyForm" action="${pageContext.request.contextPath}/adminproperties" method="post">
+                <!-- Title -->
+                <div class="form-group">
+                    <label>Property Title</label>
+                    <input type="text" name="title" class="form-input" placeholder="Enter property title" required>
+                </div>
+
+                <!-- Property Type & Status -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Property Type</label>
+                        <select name="propertyType" class="form-select" required>
+                            <option value="">Select Type</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="House">House</option>
+                            <option value="Land">Land</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Villa">Villa</option>
+                            <option value="Restaurant">Restaurant</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="available" class="form-select">
+                            <option value="true" selected>For Sale</option>
+                            <option value="false">For Rent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Price & Area -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (Rs.)</label>
+                        <input type="number" name="price" class="form-input" step="1000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Area (sq.ft)</label>
+                        <input type="number" name="areaSqft" class="form-input" required>
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" class="form-input" placeholder="Enter location" required>
+                </div>
+
+                <!-- Storey, Bedrooms, Bathrooms -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Floors / Storeys</label>
+                        <input type="number" name="storey" class="form-input" min="0" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bedrooms</label>
+                        <input type="number" name="bedrooms" class="form-input" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <input type="number" name="bathrooms" class="form-input" min="0" value="0">
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" class="form-textarea" rows="4" placeholder="Enter property description"></textarea>
+                </div>
+
+                <!-- Owner Info -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Owner Name</label>
+                        <input type="text" name="ownerName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Owner Contact</label>
+                        <input type="text" name="ownerContact" class="form-input" required>
+                    </div>
+                </div>
+
+                <!-- Year Built -->
+                <div class="form-group">
+                    <label>Year Built</label>
+                    <input type="number" name="yearBuilt" class="form-input" min="1800" max="2025" value="2025">
+                </div>
+
+                <!-- Furnishing -->
+                <div class="form-group">
+                    <label>Furnishing</label>
+                    <input type="text" name="furnishing" class="form-input" placeholder="e.g. Semi-furnished">
+                </div>
+
+                <!-- Coordinates -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Longitude</label>
+                        <input type="number" name="longitude" class="form-input" step="any" placeholder="e.g. 85.3245">
+                    </div>
+                    <div class="form-group">
+                        <label>Latitude</label>
+                        <input type="number" name="latitude" class="form-input" step="any" placeholder="e.g. 27.7172">
+                    </div>
+                </div>
+
+                <!-- Image URL -->
+                <div class="form-group">
+                    <label>Primary Image URL</label>
+                    <input type="text" name="primaryImagePath" class="form-input" placeholder="Enter image URL">
+                </div>
+
+                <!-- Additional Features -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kitchen</label>
+                        <input type="checkbox" name="kitchen" value="true">
+                    </div>
+                    <div class="form-group">
+                        <label>Featured</label>
+                        <input type="checkbox" name="featured" value="true">
+                    </div>
+                </div>
+
+                <!-- Created At -->
+                <div class="form-group">
+                    <label>Created At</label>
+                    <input type="text" name="createdAt" class="form-input" placeholder="Leave blank for auto-date">
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Property</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- JavaScript -->
+    <script>
+        // Open Modal
+        function openModal() {
+            document.getElementById("propertyModal").style.display = "block";
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById("propertyModal").style.display = "none";
+        }
+
+        // Reset Filters
+        function resetFilters() {
+            window.location.href = "${pageContext.request.contextPath}/adminproperties";
+        }
+    </script>
 </body>
 </html>

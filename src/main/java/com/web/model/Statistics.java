@@ -1,4 +1,4 @@
-package com.webmodel;
+package com.web.model;
 
 public class Statistics {
     private int totalProperties;

@@ -5,14 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tomcat.jakartaee.bcel.classfile.ClassFormatException;
 
 import com.web.database.DatabaseConnection;
-import com.webmodel.Property;
-import com.webmodel.Statistics;
+import com.web.model.Property;
+import com.web.model.Statistics;
+import com.web.model.User;
+import com.web.model.UserRole;
+
 
 public class AdminDAO {
 
@@ -84,7 +88,7 @@ private Connection conn;
                 property.setBathrooms(rs.getInt("bathrooms"));
                 property.setKitchen(rs.getBoolean("kitchen"));
                 property.setAvailable(rs.getBoolean("available"));
-                property.setCreatedAt(rs.getString("created_at"));
+                property.setCreatedAt(rs.getTimestamp("created_at"));
                 property.setYearBuilt(rs.getInt("year_built"));
                 property.setTitle(rs.getString("title"));
                 property.setLocation(rs.getString("location"));
@@ -103,5 +107,47 @@ private Connection conn;
         
         return properties;
     }
+
+	public List<User> getAllUsers() {
+		        List<User> users = new ArrayList<>();
+		        String query = "SELECT user_id, name, email, phone, address, role, dob, last_login, created_at FROM users";
+
+		        try (PreparedStatement stmt = conn.prepareStatement(query);
+		             ResultSet rs = stmt.executeQuery()) {
+
+		            while (rs.next()) {
+		                User user = new User();
+
+		                user.setId(rs.getInt("user_id"));
+		                user.setFullName(rs.getString("name"));
+		                user.setEmail(rs.getString("email"));
+		                user.setPhone(rs.getString("phone"));
+		                user.setAddress(rs.getString("address"));
+		                String roleStr = rs.getString("role");
+		                UserRole roleEnum = UserRole.valueOf(roleStr); // Converts DB value to Java enum
+		                user.setRole(roleEnum);
+
+		                Timestamp dobTs = rs.getTimestamp("dob");
+		                if (dobTs != null) {
+		                    user.setDob(dobTs);
+		                }
+
+		                Timestamp loginTs = rs.getTimestamp("last_login");
+		                if (loginTs != null) {
+		                    user.setLastLogin(loginTs);
+		                }
+
+		                Timestamp createdTs = rs.getTimestamp("created_at");
+		                if (createdTs != null) {
+		                    user.setCreatedAt(createdTs);
+		                }
+		                users.add(user);
+		            }
+		        } catch (SQLException e) {
+		            e.printStackTrace();
+		        }
+
+		        return users;
+		    }
 }
 

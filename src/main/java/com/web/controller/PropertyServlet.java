@@ -1,136 +1,104 @@
 package com.web.controller;
 
-import java.io.IOException;
-import java.util.List;
-
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
 import com.web.DAO.PropertyDAO;
-import com.webmodel.Property;
+import com.web.model.Property;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.util.*;
 
-@WebServlet("/property")
+@WebServlet("/propertyServlet")
 public class PropertyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private PropertyDAO propertyDAO;
-    
-    public PropertyServlet() {
-        propertyDAO = new PropertyDAO();
+
+    public void init() throws ServletException {
+        try {
+            propertyDAO = new PropertyDAO();
+        } catch (Exception  e) {
+            throw new ServletException("Error initializing PropertyDAO", (Throwable) e);
+        }
     }
-    
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Get filter parameters
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String location = request.getParameter("location");
         String propertyType = request.getParameter("propertyType");
-        
-        Double minPrice = null;
-        Double maxPrice = null;
-        Integer minBedrooms = null;
-        Integer maxBedrooms = null;
-        Integer minBathrooms = null;
-        Integer maxBathrooms = null;
-        Double minArea = null;
-        Double maxArea = null;
-        
+        String minPriceStr = request.getParameter("minPrice");
+        String maxPriceStr = request.getParameter("maxPrice");
+        String bedroomsStr = request.getParameter("bedrooms");
+        String bathroomsStr = request.getParameter("bathrooms");
+        String minAreaStr = request.getParameter("minArea");
+        String maxAreaStr = request.getParameter("maxArea");
+        String sort = request.getParameter("sort");
+        String pageStr = request.getParameter("page");
+
+        int currentPage = 1;
         try {
-            if (request.getParameter("minPrice") != null && !request.getParameter("minPrice").isEmpty()) {
-                minPrice = Double.parseDouble(request.getParameter("minPrice"));
-            }
-            
-            if (request.getParameter("maxPrice") != null && !request.getParameter("maxPrice").isEmpty()) {
-                maxPrice = Double.parseDouble(request.getParameter("maxPrice"));
-            }
-            
-            // Parse bedroom filters
-            if (request.getParameterValues("bedrooms") != null) {
-                String[] bedroomFilters = request.getParameterValues("bedrooms");
-                for (String filter : bedroomFilters) {
-                    if (filter.equals("bed1")) minBedrooms = 1;
-                    if (filter.equals("bed2")) minBedrooms = 2;
-                    if (filter.equals("bed3")) minBedrooms = 3;
-                    if (filter.equals("bed4")) minBedrooms = 4;
-                }
-            }
-            
-            // Parse bathroom filters
-            if (request.getParameterValues("bathrooms") != null) {
-                String[] bathroomFilters = request.getParameterValues("bathrooms");
-                for (String filter : bathroomFilters) {
-                    if (filter.equals("bath1")) minBathrooms = 1;
-                    if (filter.equals("bath2")) minBathrooms = 2;
-                    if (filter.equals("bath3")) minBathrooms = 3;
-                }
-            }
-            
-            if (request.getParameter("minArea") != null && !request.getParameter("minArea").isEmpty()) {
-                minArea = Double.parseDouble(request.getParameter("minArea"));
-            }
-            
-            if (request.getParameter("maxArea") != null && !request.getParameter("maxArea").isEmpty()) {
-                maxArea = Double.parseDouble(request.getParameter("maxArea"));
-            }
-        } catch (NumberFormatException e) {
-            // Handle parsing errors
+            if (pageStr != null && !pageStr.isEmpty()) currentPage = Integer.parseInt(pageStr);
+        } catch (NumberFormatException ignored) {}
+
+        // Parse filter values
+        Double minPrice = parseDouble(minPriceStr);
+        Double maxPrice = parseDouble(maxPriceStr);
+        Double minArea = parseDouble(minAreaStr);
+        Double maxArea = parseDouble(maxAreaStr);
+
+        Integer bedrooms = null;
+        if ("bed1".equals(bedroomsStr)) bedrooms = 1;
+        else if ("bed2".equals(bedroomsStr)) bedrooms = 2;
+        else if ("bed3".equals(bedroomsStr)) bedrooms = 3;
+        else if ("bed4".equals(bedroomsStr)) bedrooms = 4;
+
+        Integer bathrooms = null;
+        if ("bath1".equals(bathroomsStr)) bathrooms = 1;
+        else if ("bath2".equals(bathroomsStr)) bathrooms = 2;
+        else if ("bath3".equals(bathroomsStr)) bathrooms = 3;
+
+        int pageSize = 6;
+
+        try {
+            List<Property> properties = propertyDAO.getFilteredProperties(
+                    location, propertyType, minPrice, maxPrice,
+                    bedrooms, bathrooms, minArea, maxArea, sort, currentPage, pageSize);
+
+            int totalProperties = propertyDAO.getTotalFilteredCount(
+                    location, propertyType, minPrice, maxPrice,
+                    bedrooms, bathrooms, minArea, maxArea);
+
+            int totalPages = (int) Math.ceil((double) totalProperties / pageSize);
+
+            // Set attributes
+            request.setAttribute("properties", properties);
+            request.setAttribute("totalProperties", totalProperties);
+            request.setAttribute("currentPage", currentPage);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("paramLocation", location);
+            request.setAttribute("paramPropertyType", propertyType);
+            request.setAttribute("paramMinPrice", minPriceStr);
+            request.setAttribute("paramMaxPrice", maxPriceStr);
+            request.setAttribute("paramMinArea", minAreaStr);
+            request.setAttribute("paramMaxArea", maxAreaStr);
+            request.setAttribute("paramSort", sort);
+            request.setAttribute("paramBedrooms", bedroomsStr);
+            request.setAttribute("paramBathrooms", bathroomsStr);
+
+        } catch (Exception e) {
             e.printStackTrace();
+            request.setAttribute("properties", Collections.emptyList());
+            request.setAttribute("totalProperties", 0);
         }
-        
-        // Get sort parameter
-        String sortBy = request.getParameter("sort");
-        
-        // Get pagination parameters
-        int page = 1;
-        int pageSize = 6; // Show 6 properties per page
-        
-        if (request.getParameter("page") != null) {
-            try {
-                page = Integer.parseInt(request.getParameter("page"));
-                if (page < 1) page = 1;
-            } catch (NumberFormatException e) {
-                page = 1;
-            }
-        }
-        
-        // Get properties
-        List<Property> properties = propertyDAO.getFilteredProperties(
-                location, propertyType, minPrice, maxPrice, 
-                minBedrooms, maxBedrooms, minBathrooms, maxBathrooms,
-                minArea, maxArea, sortBy, page, pageSize);
-        
-        // Get total count for pagination
-        int totalProperties = propertyDAO.getTotalFilteredPropertiesCount(
-                location, propertyType, minPrice, maxPrice,
-                minBedrooms, maxBedrooms, minBathrooms, maxBathrooms,
-                minArea, maxArea);
-        
-        int totalPages = (int) Math.ceil((double) totalProperties / pageSize);
-        
-        // Set attributes for JSP
-        request.setAttribute("properties", properties);
-        request.setAttribute("totalProperties", totalProperties);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        
-        // Set filter attributes for preserving state
-        request.setAttribute("location", location);
-        request.setAttribute("propertyType", propertyType);
-        request.setAttribute("minPrice", minPrice);
-        request.setAttribute("maxPrice", maxPrice);
-        request.setAttribute("minBedrooms", minBedrooms);
-        request.setAttribute("maxBedrooms", maxBedrooms);
-        request.setAttribute("minBathrooms", minBathrooms);
-        request.setAttribute("maxBathrooms", maxBathrooms);
-        request.setAttribute("minArea", minArea);
-        request.setAttribute("maxArea", maxArea);
-        request.setAttribute("sortBy", sortBy);
-        
-        request.getRequestDispatcher("/pages/buyProperties.jsp").forward(request, response);
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/buy.jsp");
+        dispatcher.forward(request, response);
     }
-    
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+
+    private Double parseDouble(String value) {
+        if (value == null || value.trim().isEmpty()) return null;
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 }

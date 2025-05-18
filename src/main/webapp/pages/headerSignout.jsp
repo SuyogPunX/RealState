@@ -1,3 +1,4 @@
+<%@page import="com.web.model.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 String currentPage = request.getRequestURI();
@@ -123,47 +124,32 @@ String currentPage = request.getRequestURI();
     <div class="header-icon">🛒</div>
     <div class="profile-dropdown">
         <div class="profile-icon" onclick="toggleProfileDropdown()">👤</div>
-        <div class="profile-dropdown-content" id="profileDropdown">
-            <% if(session != null && session.getAttribute("user") != null) { 
-                // Using dummy data for now - this will be replaced with actual data from backend
-                String userName = "John Doe";
-                String userEmail = "john.doe@example.com";
-                String userPhone = "+1 (555) 123-4567";
-                String userAddress = "123 Sangri-La Street, Paradise City";
-                
-                // Later this will be replaced with:
-                // com.your.package.User user = (com.your.package.User) session.getAttribute("user");
-                // String userName = user.getName();
-                // etc.
-            %>
-                <div class="profile-header">User Profile</div>
-                <div class="profile-detail">
-                    <div class="detail-icon">👤</div>
-                    <div><%= userName %></div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-icon">✉️</div>
-                    <div><%= userEmail %></div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-icon">📞</div>
-                    <div><%= userPhone %></div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-icon">🏠</div>
-                    <div><%= userAddress %></div>
-                </div>
-                <a href="${pageContext.request.contextPath}/pages/home.jsp?action=signout">
+       <div class="profile-dropdown-content" id="profileDropdown">
+	    <c:choose>
+	        <c:when test="${not empty user}">
+	            <div class="profile-header">User Profile</div>
+	            <div class="profile-detail">
+	                <div class="detail-icon">👤</div>
+	                <div>${user.fullName}</div>
+	            </div>
+	            <div class="profile-detail">
+	                <div class="detail-icon">✉️</div>
+	                <div>${user.email}</div>
+	            </div>
+	            <div class="profile-detail">
+	                <div class="detail-icon">📞</div>
+	                <div>${user.phone}</div>
+	            </div>
+	            <div class="profile-detail">
+	                <div class="detail-icon">🏠</div>
+	                <div>${user.address}</div>
+	            </div>
+	            <a href="${pageContext.request.contextPath}/pages/home.jsp?action=signout">
                     <button class="signout-btn">Sign Out</button>
                 </a>
-            <% } else { %>
-                <div class="profile-header">Welcome!</div>
-                <div class="profile-detail">You are not logged in.</div>
-                <a href="${pageContext.request.contextPath}/pages/login.jsp">
-                    <button class="signout-btn" style="background-color: #007BFF;">Log In</button>
-                </a>
-            <% } %>
-        </div>
+	        </c:when>
+	    </c:choose>
+	</div>
     </div>
 </div>
 </header>

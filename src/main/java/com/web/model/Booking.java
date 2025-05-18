@@ -1,4 +1,4 @@
-package com.webmodel;
+package com.web.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

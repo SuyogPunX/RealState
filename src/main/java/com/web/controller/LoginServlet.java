@@ -1,8 +1,8 @@
 package com.web.controller;
 
 import com.web.DAO.UserDAO;
-import com.webmodel.User;
-import com.webmodel.UserRole;
+import com.web.model.User;
+import com.web.model.UserRole;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

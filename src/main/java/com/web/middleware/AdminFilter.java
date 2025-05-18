@@ -2,7 +2,7 @@ package com.web.middleware;
 
 import java.io.IOException;
 
-import com.webmodel.User;
+import com.web.model.User;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -35,22 +35,34 @@ public class AdminFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-        
-        HttpSession session = request.getSession(false); 
+
+        HttpSession session = request.getSession(false);
+        String uri = request.getRequestURI();
+
+        // Check if user is logged in
         if (session == null || session.getAttribute("user") == null) {
-            // User not logged in, redirect to login page
             response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
-        
+
         User user = (User) session.getAttribute("user");
+
+        // Check if user is an admin
         if (!"ADMIN".equals(user.getRole())) {
-            // User is not an admin, redirect to unauthorized page
-            response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
+            response.sendRedirect(request.getContextPath() + "/pages/admin.jsp");
             return;
         }
-        
-        // If user is logged in and is an admin, continue to the requested resource
+
+        // If accessing .jsp file directly, redirect to servlet
+        if (uri.endsWith(".jsp")) {
+            String redirectPath = uri.replace("/pages/admin.jsp", "/admin")
+                                     .replace("/pages/properties.jsp", "/admin?action=properties")
+                                     .replace("/pages/users.jsp", "/admin?action=users");
+            response.sendRedirect(redirectPath);
+            return;
+        }
+
+        // Otherwise, continue with normal flow
         chain.doFilter(request, response);
     }
-}
+ }
