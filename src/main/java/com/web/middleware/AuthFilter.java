@@ -38,7 +38,7 @@ public class AuthFilter implements Filter {
         boolean isLoginPage = uri.endsWith("login.jsp");
         boolean isRegisterPage = uri.endsWith("registration.jsp");
         boolean isLoginServlet = uri.endsWith("LoginServlet");
-        boolean isRegisterServlet = uri.endsWith("RegisterServlet");
+        boolean isRegisterServlet = uri.endsWith("RegistrationServlet");
         boolean isHomePage = uri.endsWith("home.jsp");
         
         // Public resources
@@ -55,8 +55,10 @@ public class AuthFilter implements Filter {
             // Store the original request URI for redirection after login
             // We create a session here only to store the redirect URL
             HttpSession redirectSession = request.getSession(true);
-            redirectSession.setAttribute("redirectAfterLogin", uri);
             
+            System.out.println(uri);
+            redirectSession.setAttribute("redirectAfterLogin", uri);
+           
             response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }

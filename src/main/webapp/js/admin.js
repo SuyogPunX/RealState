@@ -331,60 +331,7 @@ function initializePagination() {
         showingEnd.textContent = end;
     }
     
-    // Simulates loading data for the current page
-    function loadPageData(page) {
-        // In a real application, this would fetch data from an API
-        // For this demo, we'll just add a loading indicator
-        
-        const tableBody = document.querySelector('table tbody');
-        if (tableBody) {
-            // Show loading state
-            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading properties...</td></tr>';
-            
-            // Simulate API delay
-            setTimeout(() => {
-                // Generate random property data for demo purposes
-                let rows = '';
-                const types = ['Apartment', 'House', 'Land', 'Villa', 'Restaurant'];
-                const locations = ['Kathmandu', 'Lalitpur', 'Bhaktapur', 'Pokhara', 'Biratnagar', 'Chitwan'];
-                const statuses = ['badge-sale', 'badge-rent', 'badge-pending', 'badge-active'];
-                const statusTexts = ['For Sale', 'For Rent', 'Pending', 'Active'];
-                
-                const startIndex = (page - 1) * itemsPerPage;
-                
-                for (let i = 0; i < itemsPerPage; i++) {
-                    // Skip if we exceed total items
-                    if (startIndex + i >= totalItems) break;
-                    
-                    const propertyName = `Property ${startIndex + i + 1}`;
-                    const type = types[Math.floor(Math.random() * types.length)];
-                    const location = locations[Math.floor(Math.random() * locations.length)];
-                    const price = Math.floor(Math.random() * 50000000) + 5000000;
-                    const formattedPrice = `Rs. ${price.toLocaleString()}`;
-                    const statusIndex = Math.floor(Math.random() * statuses.length);
-                    
-                    rows += `
-                        <tr>
-                            <td>
-                                <div class="property-item">
-                                    <div class="property-image">
-                                        <img src="/api/placeholder/60/40" alt="${propertyName}">
-                                    </div>
-                                    <div>${propertyName} in ${location}</div>
-                                </div>
-                            </td>
-                            <td>${type}</td>
-                            <td>${location}</td>
-                            <td>${formattedPrice}</td>
-                            <td><span class="badge ${statuses[statusIndex]}">${statusTexts[statusIndex]}</span></td>
-                        </tr>
-                    `;
-                }
-                
-                tableBody.innerHTML = rows;
-            }, 500);
-        }
-    }
+    
     
     // Add CSS styles for pagination ellipsis
     const style = document.createElement('style');

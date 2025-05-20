@@ -236,7 +236,6 @@ public class PropertyDAO {
      * Fetch top 3 most recently added properties
      */
     public List<Property> getRecentProperties() {
-    	System.out.println("lakkad");
         List<Property> properties = new ArrayList<>();
         String query = "SELECT * FROM properties ORDER BY propertyId DESC LIMIT 3";
 
@@ -315,7 +314,7 @@ public class PropertyDAO {
     
 
     public boolean addProperty(Property property) throws SQLException {
-        String sql = "INSERT INTO properties (title, description,  location, price, areaSqft, storey, bedrooms, bathrooms, kitchen, available, createdAt, yearBuilt, furnishing, ownerName, ownerContact, longitude, latitude, primaryImagePath,propertyType,) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO properties (title, description,  location, price, areaSqft, storey, bedrooms, bathrooms, kitchen, available, createdAt, yearBuilt, furnishing, ownerName, ownerContact, longitude, latitude, primaryImagePath,propertyType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
         try {
 				stmt.setString(1, property.getTitle());
@@ -337,6 +336,7 @@ public class PropertyDAO {
 	            stmt.setDouble(17, property.getLatitude());
 	            stmt.setString(18, property.getPrimaryImagePath());
 	            stmt.setString(19, property.getPropertyType());
+	            
 
 	            int rowsAffected=stmt.executeUpdate();
 			    return rowsAffected>0;
@@ -434,6 +434,56 @@ public class PropertyDAO {
 
         return properties;
     }
+
+    public Property getPropertyById(int id) throws SQLException {
+        String sql = "SELECT * FROM properties WHERE propertyId = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                Property p = new Property();
+                p.setPropertyId(rs.getInt("propertyId"));
+                p.setTitle(rs.getString("title"));
+                p.setDescription(rs.getString("description"));
+                p.setLocation(rs.getString("location"));
+                p.setPrice(rs.getDouble("price"));
+                p.setAreaSqft(rs.getDouble("areaSqft"));
+                p.setStorey(rs.getInt("storey"));
+                p.setBedrooms(rs.getInt("bedrooms"));
+                p.setBathrooms(rs.getInt("bathrooms"));
+                p.setKitchen(rs.getBoolean("kitchen"));
+                p.setAvailable(rs.getBoolean("available"));
+                p.setCreatedAt(rs.getTimestamp("createdAt"));
+                p.setYearBuilt(rs.getInt("yearBuilt"));
+                p.setFurnishing(rs.getString("furnishing"));
+                p.setOwnerName(rs.getString("ownerName"));
+                p.setOwnerContact(rs.getString("ownerContact"));
+                p.setLongitude(rs.getDouble("longitude"));
+                p.setLatitude(rs.getDouble("latitude"));
+                p.setPrimaryImagePath(rs.getString("primaryImagePath"));
+                p.setPropertyType(rs.getString("propertyType"));
+
+                return p;
+            } else {
+                return null; // No property found
+            }
+        }
+    }
+
+	public void updateProperty(Property property) throws SQLException {
+		String sql = "UPDATE properties SET available = ? WHERE propertyId = ?";
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setBoolean(1, property.isAvailable());
+	        stmt.setInt(2, property.getPropertyId());
+
+	        int rowsAffected = stmt.executeUpdate();
+	        if (rowsAffected == 0) {
+	            throw new SQLException("Property not found for update.");
+	        }
+	    }
+	}
 }
     
     

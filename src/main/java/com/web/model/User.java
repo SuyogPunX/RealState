@@ -13,6 +13,7 @@ public class User {
     private UserRole role; 
     private Timestamp createdAt;
     private Timestamp lastLogin;
+    private boolean active;
     
     
 
@@ -29,6 +30,7 @@ public class User {
 		this.role = role;
 		this.createdAt = createdAt;
 		this.lastLogin = lastLogin;
+		this.active = true;
 	}
 
 	// Getters and Setters
@@ -114,6 +116,14 @@ public class User {
 
 	public void setLastLogin(Timestamp lastLogin) {
 		this.lastLogin = lastLogin;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
     

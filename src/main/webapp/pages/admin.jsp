@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Sangri-La Estates</title>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -21,15 +21,9 @@
                 </div>
             </div>
             
-           <a href="${pageContext.request.contextPath}/admin" class="nav-link active">
-			    <span>📊</span> Dashboard
-			</a>
-			<a href="${pageContext.request.contextPath}/admin?action=properties" class="nav-link">
-			    <span>🏠</span> Properties
-			</a>
-			<a href="${pageContext.request.contextPath}/admin?action=users" class="nav-link">
-			    <span>👥</span> Users
-			</a>
+           <a href="${pageContext.request.contextPath}/admin" class="nav-link">Dashboard</a>
+			<a href="${pageContext.request.contextPath}/admin?action=properties" class="nav-link">Properties</a>
+			<a href="${pageContext.request.contextPath}/admin?action=users" class="nav-link">Users</a>
         </div>
 
         <!-- Main Content -->
@@ -70,12 +64,14 @@
                     <div class="status-card-change change-positive">+15% from last month</div>
                 </div>
                 
-                <div class="card status-card">
-                    <div class="status-card-icon icon-inquiries">📝</div>
-                    <div class="status-card-title">New Inquiries</div>
-                    <div class="status-card-value">${stats.newInquiries}</div>
-                    <div class="status-card-change change-positive">+5% from last month</div>
-                </div>
+				<a href="${pageContext.request.contextPath}/admin?action=inquiries" class="status-card-link">
+				    <div class="card status-card">
+				        <div class="status-card-icon icon-inquiries">📝</div>
+				        <div class="status-card-title">New Inquiries</div>
+				        <div class="status-card-value">${stats.newInquiries}</div>
+				        <div class="status-card-change change-positive">+5% from last month</div>
+				    </div>
+				</a>
             </div>
             
             <!-- Properties Table -->

@@ -22,23 +22,9 @@
                     <span>Shangri-La Estates</span>
                 </div>
             </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/pages/admin.jsp" class="nav-link">
-                        <span>📊</span> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/properties" class="nav-link active">
-                        <span>🏠</span> Properties
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/users" class="nav-link">
-                        <span>👥</span> Users
-                    </a>
-                </li>
-            </ul>
+           <a href="${pageContext.request.contextPath}/admin" class="nav-link">Dashboard</a>
+			<a href="${pageContext.request.contextPath}/admin?action=properties" class="nav-link">Properties</a>
+			<a href="${pageContext.request.contextPath}/admin?action=users" class="nav-link">Users</a>
         </div>
 
         <!-- Main Content -->
@@ -133,7 +119,6 @@
                             <th>Price</th>
                             <th>Status</th>
                             <th>Added Date</th>
-                            <th>Featured</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -161,30 +146,26 @@
                                     <td>${property.location}</td>
                                     <td>₨ ${property.formattedPrice}</td>
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${property.available}"><span class="badge badge-sale">For Sale</span></c:when>
-                                            <c:when test="${property.rent}"><span class="badge badge-rent">For Rent</span></c:when>
-                                            <c:when test="${property.pending}"><span class="badge badge-pending">Pending</span></c:when>
-                                            <c:otherwise><span class="badge badge-active">Active</span></c:otherwise>
-                                        </c:choose>
-                                    </td>
+									    <c:choose>
+									        <c:when test="${property.available}">
+									            <span class="badge badge-sale">For Sale</span>
+									        </c:when>
+									        <c:otherwise>
+									            <span class="badge badge-sold">Sold</span>
+									        </c:otherwise>
+									    </c:choose>
+									</td>
                                     <td>${property.createdAt}</td>
-                                    <td>
-                                        <c:if test="${property.featured}">
-                                            <span class="badge badge-featured">✔</span>
-                                        </c:if>
-                                    </td>
+                            
                                     <td>
                                         <div class="action-buttons">
                                             <a href="${pageContext.request.contextPath}/viewProperty?id=${property.propertyId}">
-                                                <button class="btn-icon view-btn" title="View Details">👁️</button>
-                                            </a>
-                                            <a href="${pageContext.request.contextPath}/editProperty?id=${property.propertyId}">
-                                                <button class="btn-icon edit-btn" title="Edit">✏️</button>
-                                            </a>
-                                            <a href="${pageContext.request.contextPath}/deleteProperty?id=${property.propertyId}" onclick="return confirm('Are you sure?')">
-                                                <button class="btn-icon delete-btn" title="Delete">🗑️</button>
-                                            </a>
+											    <button class="btn-icon view-btn" title="View Details">👁️</button>
+											</a>
+											
+											<a href="${pageContext.request.contextPath}/editProperty?id=${property.propertyId}">
+											    <button class="btn-icon edit-btn" title="Edit">✏️</button>
+											</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -349,10 +330,6 @@
                     <div class="form-group">
                         <label>Kitchen</label>
                         <input type="checkbox" name="kitchen" value="true">
-                    </div>
-                    <div class="form-group">
-                        <label>Featured</label>
-                        <input type="checkbox" name="featured" value="true">
                     </div>
                 </div>
 

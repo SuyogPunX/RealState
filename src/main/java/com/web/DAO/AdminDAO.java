@@ -27,127 +27,92 @@ private Connection conn;
 		
 	}
 
-    public Statistics getDashboardStatistics() {
-        Statistics stats = new Statistics();
-        
-        // Queries for total properties, users, sales revenue, and inquiries
-        String propertiesQuery = "SELECT COUNT(*) FROM properties";
-        String usersQuery = "SELECT COUNT(*) FROM users";
-        String salesRevenueQuery = "SELECT SUM(price) FROM properties WHERE status='For Sale'";
-        String inquiriesQuery = "SELECT COUNT(*) FROM inquiries WHERE status='New'";
-        
-        try (Statement stmt=conn.createStatement()) {
+	public Statistics getDashboardStatistics() {
+	    Statistics stats = new Statistics();
 
-            // Total Properties
-            ResultSet rs = stmt.executeQuery(propertiesQuery);
-            if (rs.next()) {
-                stats.setTotalProperties(rs.getInt(1));
-            }
+	    // Queries for total properties, users, sales revenue, and bookings
+	    String propertiesQuery = "SELECT COUNT(*) FROM properties";
+	    String usersQuery = "SELECT COUNT(*) FROM user";
+	    
+	    // Sales revenue: sum of available properties (if available means 'For Sale')
+	    String salesRevenueQuery = "SELECT SUM(price) FROM properties WHERE available = TRUE";
+	    
+	    // New bookings with status 'PENDING'
+	    String pendingBookingsQuery = "SELECT COUNT(*) FROM booking WHERE status = 'PENDING'";
 
-            // Total Users
-            rs = stmt.executeQuery(usersQuery);
-            if (rs.next()) {
-                stats.setTotalUsers(rs.getInt(1));
-            }
+	    try (Statement stmt = conn.createStatement()) {
 
-            // Sales Revenue
-            rs = stmt.executeQuery(salesRevenueQuery);
-            if (rs.next()) {
-                stats.setSalesRevenue(rs.getDouble(1));
-            }
+	        // Total Properties
+	        ResultSet rs = stmt.executeQuery(propertiesQuery);
+	        if (rs.next()) {
+	            stats.setTotalProperties(rs.getInt(1));
+	        }
 
-            // New Inquiries
-            rs = stmt.executeQuery(inquiriesQuery);
-            if (rs.next()) {
-                stats.setNewInquiries(rs.getInt(1));
-            }
+	        // Total Users
+	        rs = stmt.executeQuery(usersQuery);
+	        if (rs.next()) {
+	            stats.setTotalUsers(rs.getInt(1));
+	        }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	        // Sales Revenue
+	        rs = stmt.executeQuery(salesRevenueQuery);
+	        if (rs.next()) {
+	            stats.setSalesRevenue(rs.getDouble(1));
+	        }
 
-        return stats;
-    }
+	        // Pending Bookings (was: inquiries)
+	        rs = stmt.executeQuery(pendingBookingsQuery);
+	        if (rs.next()) {
+	            stats.setNewInquiries(rs.getInt(1));  // Reusing this field for pending bookings
+	        }
 
-    // Method to get recent properties
-    public List<Property> getRecentProperties() {
-        List<Property> properties = new ArrayList<>();
-        
-        String query = "SELECT * FROM properties ORDER BY created_at DESC LIMIT 5";
-        
-        try (Statement stmt = conn.createStatement()) {
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()) {
-            	Property property = new Property();
-            	property.setPropertyId(rs.getInt("property_id"));
-                property.setDescription(rs.getString("description"));
-                property.setAreaSqft(rs.getDouble("area_sqft"));
-                property.setStorey(rs.getInt("storey"));
-                property.setBedrooms(rs.getInt("bedrooms"));
-                property.setBathrooms(rs.getInt("bathrooms"));
-                property.setKitchen(rs.getBoolean("kitchen"));
-                property.setAvailable(rs.getBoolean("available"));
-                property.setCreatedAt(rs.getTimestamp("created_at"));
-                property.setYearBuilt(rs.getInt("year_built"));
-                property.setTitle(rs.getString("title"));
-                property.setLocation(rs.getString("location"));
-                property.setPrice(rs.getDouble("price"));
-                property.setFurnishing(rs.getString("furnishing"));
-                property.setOwnerName(rs.getString("owner_name"));
-                property.setOwnerContact(rs.getString("owner_contact"));
-                property.setLongitude(rs.getDouble("longitude"));
-                property.setLatitude(rs.getDouble("latitude"));
-                properties.add(property);
-            }
+	    return stats;
+	}
+	
+	public List<Property> getRecentProperties() {
+	    List<Property> properties = new ArrayList<>();
+	    String query = "SELECT * FROM properties ORDER BY createdAt DESC LIMIT 5";
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        
-        return properties;
-    }
+	    try (Statement stmt = conn.createStatement()) {
+	        ResultSet rs = stmt.executeQuery(query);
 
-	public List<User> getAllUsers() {
-		        List<User> users = new ArrayList<>();
-		        String query = "SELECT user_id, name, email, phone, address, role, dob, last_login, created_at FROM users";
+	        while (rs.next()) {
+	            Property property = new Property();
+	            property.setPropertyId(rs.getInt("propertyId"));
+	            property.setTitle(rs.getString("title"));
+	            property.setDescription(rs.getString("description"));
+	            property.setLocation(rs.getString("location"));
+	            property.setPrice(rs.getDouble("price"));
+	            property.setStorey(rs.getInt("storey"));
+	            property.setBedrooms(rs.getInt("bedrooms"));
+	            property.setBathrooms(rs.getInt("bathrooms"));
+	            property.setKitchen(rs.getBoolean("kitchen"));
+	            property.setAvailable(rs.getBoolean("available"));
+	            property.setCreatedAt(rs.getTimestamp("createdAt"));
+	            property.setYearBuilt(rs.getInt("yearBuilt"));
+	            property.setFurnishing(rs.getString("furnishing"));
+	            property.setOwnerName(rs.getString("ownerName"));
+	            property.setOwnerContact(rs.getString("ownerContact"));
+	            property.setLongitude(rs.getDouble("longitude"));
+	            property.setLatitude(rs.getDouble("latitude"));
+	            property.setPrimaryImagePath(rs.getString("primaryImagePath"));
+	            property.setPropertyType(rs.getString("propertyType"));
 
-		        try (PreparedStatement stmt = conn.prepareStatement(query);
-		             ResultSet rs = stmt.executeQuery()) {
+	            properties.add(property);
+	        }
 
-		            while (rs.next()) {
-		                User user = new User();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 
-		                user.setId(rs.getInt("user_id"));
-		                user.setFullName(rs.getString("name"));
-		                user.setEmail(rs.getString("email"));
-		                user.setPhone(rs.getString("phone"));
-		                user.setAddress(rs.getString("address"));
-		                String roleStr = rs.getString("role");
-		                UserRole roleEnum = UserRole.valueOf(roleStr); // Converts DB value to Java enum
-		                user.setRole(roleEnum);
+	    return properties;
+	}
 
-		                Timestamp dobTs = rs.getTimestamp("dob");
-		                if (dobTs != null) {
-		                    user.setDob(dobTs);
-		                }
-
-		                Timestamp loginTs = rs.getTimestamp("last_login");
-		                if (loginTs != null) {
-		                    user.setLastLogin(loginTs);
-		                }
-
-		                Timestamp createdTs = rs.getTimestamp("created_at");
-		                if (createdTs != null) {
-		                    user.setCreatedAt(createdTs);
-		                }
-		                users.add(user);
-		            }
-		        } catch (SQLException e) {
-		            e.printStackTrace();
-		        }
-
-		        return users;
-		    }
+    
+	
 }
 

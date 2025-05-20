@@ -3,6 +3,7 @@ package com.web.middleware;
 import java.io.IOException;
 
 import com.web.model.User;
+import com.web.model.UserRole;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -46,9 +47,7 @@ public class AdminFilter implements Filter {
         }
 
         User user = (User) session.getAttribute("user");
-
-        // Check if user is an admin
-        if (!"ADMIN".equals(user.getRole())) {
+        if (user.getRole() != UserRole.ADMIN) {
             response.sendRedirect(request.getContextPath() + "/pages/admin.jsp");
             return;
         }

@@ -6,11 +6,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tomcat.jakartaee.bcel.classfile.ClassFormatException;
 
 import com.web.database.DatabaseConnection;
+import com.web.model.Booking;
+import com.web.model.Inquiries;
 import com.web.model.User;
 import com.web.model.UserRole;
 import com.web.utility.EncryptDecrypt;
@@ -71,20 +78,24 @@ public class UserDAO {
 
 	public boolean register(String fullName, String phone, LocalDate dob, String email,String address, String password,
 			String confirmPassword, String role){
-		
-		 String sql = "INSERT INTO user (name, phone, dob, email, address, password, role, created_at, last_login) " +
-                 "VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
-		try {
-			PreparedStatement ps = conn.prepareStatement(sql);
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+
+			String sql = "INSERT INTO user (name, phone, dob, email, address, password, role, created_at, last_login, active) " +
+		             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		try (PreparedStatement ps = conn.prepareStatement(sql)) {
 		    ps.setString(1, fullName);
 		    ps.setString(2, phone);
 		    ps.setDate(3, Date.valueOf(dob));
 		    ps.setString(4, email);
 		    ps.setString(5, address);
 		    ps.setString(6, password); 
-		    ps.setString(7, role);
-		    
-		    int rowsAffected=ps.executeUpdate();
+		    ps.setString(7, role); 
+		    ps.setTimestamp(8, now);
+		    ps.setTimestamp(9, now);
+		    ps.setBoolean(10, true);      // active = true
+
+		    int rowsAffected = ps.executeUpdate();
 		    return rowsAffected>0;
 
 		}catch(SQLException e){
@@ -106,6 +117,109 @@ public class UserDAO {
 		return false;
 	}
 	
-	
+	public List<User> getAllUsers() throws SQLException {
+	    String sql = "SELECT * FROM user";
+	    List<User> userList = new ArrayList<>();
+	    
+	    try (PreparedStatement stmt = conn.prepareStatement(sql);
+	         ResultSet rs = stmt.executeQuery()) {
+	        
+	        while (rs.next()) {
+	            User user = new User();
+	            user.setId(rs.getInt("user_id"));
+	            user.setFullName(rs.getString("name"));
+	            user.setEmail(rs.getString("email"));
+	            user.setPhone(rs.getString("phone"));
+	            user.setActive(rs.getBoolean("active")); 
+	            user.setCreatedAt(rs.getTimestamp("created_at"));
 
+	            userList.add(user);
+	        }
+	    }
+
+	    return userList;
+	}
+
+	public User getUserById(int id) throws SQLException {
+	    String sql = "SELECT * FROM user WHERE user_id = ?";
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setInt(1, id);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                User user = new User();
+	                user.setId(rs.getInt("user_id"));
+	                user.setFullName(rs.getString("name"));
+	                user.setEmail(rs.getString("email"));
+	                user.setPhone(rs.getString("phone"));
+	                user.setActive(rs.getBoolean("active"));
+	                String roleStr = rs.getString("role");
+	                user.setRole(UserRole.valueOf(roleStr.toUpperCase()));
+	                user.setCreatedAt(rs.getTimestamp("created_at"));
+
+	                return user;
+	            }
+	        }
+	    }
+	    return null;
+	}
+
+	public void updateUserStatus(int userId, Boolean status) throws SQLException {
+	    String sql = "UPDATE user SET active = ? WHERE user_id = ?";
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setBoolean(1, status);
+	        stmt.setInt(2, userId);
+	        stmt.executeUpdate();
+	    }
+	}
+
+	public List<Booking> getAllBookings() throws SQLException {
+	    List<Booking> bookings = new ArrayList<>();
+	    
+	    String query = "SELECT " +
+	                   "b.booking_id AS id, " +
+	                   "b.property_id AS propertyId, " +
+	                   "b.user_id AS userId, " +
+	                   "b.scheduled_at AS scheduledAt, " +
+	                   "b.created_at AS createdAt, " +
+	                   "b.booking_date AS bookingDate, " +
+	                   "b.booking_time AS bookingTime, " +
+	                   "b.customer_comments AS customerComments, " +
+	                   "b.meeting_location AS meetingLocation, " +
+	                   "b.status AS status, " +
+	                   "u.name AS userName, " +
+	                   "u.email AS userEmail, " +
+	                   "p.title AS propertyName " +
+	                   "FROM bookings b " +
+	                   "JOIN user u ON b.user_id = u.user_id " +
+	                   "JOIN properties p ON b.property_id = p.propertyId";
+
+	    try (PreparedStatement stmt = conn.prepareStatement(query);
+	         ResultSet rs = stmt.executeQuery()) {
+
+	        while (rs.next()) {
+	            Booking booking = new Booking();
+
+	            booking.setId(rs.getInt("id"));
+	            booking.setPropertyId(rs.getInt("propertyId"));
+	            booking.setUserId(rs.getInt("userId"));
+
+	            booking.setBookingTime(rs.getTimestamp("bookingTime"));
+
+	            booking.setMeetingLocation(rs.getString("meetingLocation"));
+
+	            // Convert String status to Booking.Status enum
+	            String statusStr = rs.getString("status");
+	            if (statusStr != null) {
+	                booking.setStatus(Booking.Status.valueOf(statusStr));
+	            }
+
+
+
+	            bookings.add(booking);
+	        }
+	    }
+	    return bookings;
+	}
+
+	
 }

@@ -27,8 +27,7 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        System.out.println("HomeServlet.doGet() called at lakkad ");
+
 
         // Load recent properties (e.g., latest 3)
         List<Property> recentProperties = Collections.emptyList();

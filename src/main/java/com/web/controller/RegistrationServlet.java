@@ -20,9 +20,14 @@ import com.web.utility.EncryptDecrypt;
 
 
 
-@WebServlet(urlPatterns = { "/RegistrationServlet" })
+@WebServlet( "/RegistrationServlet" )
 public class RegistrationServlet extends HttpServlet {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected void doGet(HttpServletRequest request,HttpServletResponse response) throws IOException, ServletException {
 		//check if user exists
 		 HttpSession session = request.getSession(false);
@@ -47,6 +52,8 @@ public class RegistrationServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
             return;
         }
+        
+        System.out.println("servlet is accessed");
 		
 		String firstName=request.getParameter("firstName");
 		String lastName=request.getParameter("lastName");
@@ -69,7 +76,7 @@ public class RegistrationServlet extends HttpServlet {
 		String email=request.getParameter("email");
 		String password=request.getParameter("password");
 		String confirmPassword=request.getParameter("confirmPassword");
-		String role=request.getParameter("role");
+		String role="CUSTOMER";
 		
 		
 		// Basic validation
@@ -108,6 +115,7 @@ public class RegistrationServlet extends HttpServlet {
 			
 			if (user==true) {
 			    // Registration successful
+				System.out.println("1");
 	            response.sendRedirect(request.getContextPath()+"/pages/login.jsp");
 			    
 			} else {

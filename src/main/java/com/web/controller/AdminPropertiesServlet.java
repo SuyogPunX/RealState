@@ -1,6 +1,6 @@
 package com.web.controller;
 
-import com.web.DAO.*;
+import com.web.DAO.PropertyDAO;
 import com.web.model.Property;
 
 import jakarta.servlet.*;
@@ -16,56 +16,82 @@ public class AdminPropertiesServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private PropertyDAO propertyDAO;
 
-    public void init() {
+    public void init() throws ServletException {
         try {
-			propertyDAO = new PropertyDAO();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} // Initialize DAO
+            propertyDAO = new PropertyDAO();
+        } catch (Exception e) {
+            throw new ServletException("Error initializing DAO", e);
+        }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Get filter and sort parameters
-        String location = request.getParameter("location");
-        String propertyType = request.getParameter("propertyType");
-        String minPriceStr = request.getParameter("minPrice");
-        String maxPriceStr = request.getParameter("maxPrice");
-        String minAreaStr = request.getParameter("minArea");
-        String maxAreaStr = request.getParameter("maxArea");
-        String sort = request.getParameter("sort");
-        String pageStr = request.getParameter("page");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
 
-        int currentPage = 1;
-        try {
-            if (pageStr != null && !pageStr.isEmpty()) {
-                currentPage = Integer.parseInt(pageStr);
+        String action = request.getParameter("action");
+
+        if (action == null || action.isEmpty()) {
+            // Default behavior: show all properties
+            showAllProperties(request, response);
+        } else {
+            switch (action) {
+                case "view":
+                    viewProperty(request, response);
+                    break;
+                case "edit":
+                    showEditForm(request, response);
+                    break;
+                default:
+                    showAllProperties(request, response);
             }
-        } catch (NumberFormatException ignored) {}
+        }
+    }
 
-        // Fetch all properties from DB
-        List<Property> allProperties = null;;
-		try {
-			allProperties = propertyDAO.getAllProperties();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
 
-        // Apply Filters
+        String action = request.getParameter("action");
+        if ("edit".equals(action)) {
+            updateProperty(request, response);
+        } else {
+            try {
+				addProperty(request, response);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+    }
+
+    // === ACTIONS ===
+
+    private void showAllProperties(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<Property> allProperties = Collections.emptyList();
+
+        try {
+            allProperties = propertyDAO.getAllProperties();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Database error while fetching properties.");
+        }
+
+        // Apply filters and sorting logic here
         List<Property> filtered = allProperties.stream()
-                .filter(p -> location == null || location.equals("All of Nepal") || p.getLocation().equalsIgnoreCase(location))
-                .filter(p -> propertyType == null || propertyType.equals("All Types") || getPropertyType(p).equals(propertyType))
-                .filter(p -> minPriceStr == null || minPriceStr.isEmpty() || p.getPrice() >= Double.parseDouble(minPriceStr))
-                .filter(p -> maxPriceStr == null || maxPriceStr.isEmpty() || p.getPrice() <= Double.parseDouble(maxPriceStr))
-                .filter(p -> minAreaStr == null || minAreaStr.isEmpty() || p.getAreaSqft() >= Double.parseDouble(minAreaStr))
-                .filter(p -> maxAreaStr == null || maxAreaStr.isEmpty() || p.getAreaSqft() <= Double.parseDouble(maxAreaStr))
+                .filter(p -> {
+                    String location = request.getParameter("location");
+                    return location == null || location.equals("All of Nepal") || p.getLocation().equalsIgnoreCase(location);
+                })
+                .filter(p -> {
+                    String propertyType = request.getParameter("propertyType");
+                    return propertyType == null || propertyType.equals("All Types") || getPropertyType(p).equals(propertyType);
+                })
                 .collect(Collectors.toList());
 
         // Sorting
+        String sort = request.getParameter("sort");
         if ("priceAsc".equals(sort)) {
             filtered.sort(Comparator.comparingDouble(Property::getPrice));
         } else if ("priceDesc".equals(sort)) {
@@ -75,42 +101,108 @@ public class AdminPropertiesServlet extends HttpServlet {
         } else if ("areaDesc".equals(sort)) {
             filtered.sort((a, b) -> Double.compare(b.getAreaSqft(), a.getAreaSqft()));
         } else {
-            // Default: newest first (assuming higher ID is newer)
+            // Default: newest first
             filtered.sort((a, b) -> Integer.compare(b.getPropertyId(), a.getPropertyId()));
         }
 
-        // Pagination setup
-        int pageSize = 6;
-        int totalItems = filtered.size();
-        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+//        // Pagination setup
+//        int currentPage = 1;
+//        String pageStr = request.getParameter("page");
+//        try {
+//            currentPage = Integer.parseInt(pageStr);
+//        } catch (NumberFormatException ignored) {}
+//
+//        int pageSize = 6;
+//        int totalItems = filtered.size();
+//        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+//
+//        int start = (currentPage - 1) * pageSize;
+//        int end = Math.min(start + pageSize, totalItems);
+//
+//        List<Property> paginatedList = Collections.emptyList();
+//        if (start < end && !filtered.isEmpty()) {
+//            paginatedList = filtered.subList(start, end);
+//        }
 
-        int start = (currentPage - 1) * pageSize;
-        int end = Math.min(start + pageSize, totalItems);
-
-        List<Property> paginatedList = filtered.subList(start, end);
-
-        // Set attributes
-        request.setAttribute("properties", paginatedList);
-        request.setAttribute("totalProperties", totalItems);
-        request.setAttribute("currentPage", currentPage);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("paramLocation", location);
-        request.setAttribute("paramPropertyType", propertyType);
-        request.setAttribute("paramMinPrice", minPriceStr);
-        request.setAttribute("paramMaxPrice", maxPriceStr);
-        request.setAttribute("paramMinArea", minAreaStr);
-        request.setAttribute("paramMaxArea", maxAreaStr);
+        // Set attributes for JSP
+//        request.setAttribute("properties", paginatedList);
+//        request.setAttribute("totalProperties", totalItems);
+//        request.setAttribute("currentPage", currentPage);
+//        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("paramLocation", request.getParameter("location"));
+        request.setAttribute("paramPropertyType", request.getParameter("propertyType"));
+        request.setAttribute("paramMinPrice", request.getParameter("minPrice"));
+        request.setAttribute("paramMaxPrice", request.getParameter("maxPrice"));
+        request.setAttribute("paramMinArea", request.getParameter("minArea"));
+        request.setAttribute("paramMaxArea", request.getParameter("maxArea"));
         request.setAttribute("paramSort", sort);
 
-        // Forward to admin properties JSP
         RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/properties.jsp");
         dispatcher.forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void viewProperty(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+
+        try {
+            Property property = propertyDAO.getPropertyById(id);
+            request.setAttribute("property", property);
+            request.getRequestDispatcher("/pages/viewProperty.jsp").forward(request, response);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Property not found.");
+        }
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+
+        try {
+            Property property = propertyDAO.getPropertyById(id);
+            request.setAttribute("property", property);
+            request.getRequestDispatcher("/pages/editProperty.jsp").forward(request, response);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Property not found.");
+        }
+    }
+
+    private void updateProperty(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+    	
+    	int propertyId = Integer.parseInt(request.getParameter("propertyId"));
+
+        try {
+            // Get current property from DB
+            Property property = propertyDAO.getPropertyById(propertyId);
+
+            // Update only the 'available' field
+            boolean available = "true".equals(request.getParameter("available"));
+            property.setAvailable(available);
+
+            // Save back to DB
+            propertyDAO.updateProperty(property);
+
+            // Redirect back to properties list
+//            response.sendRedirect(request.getContextPath() + "/adminproperties");
+            
+           
+            response.sendRedirect("adminproperties");
+
+        } catch (SQLException | NumberFormatException e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Failed to update property: " + e.getMessage());
+            request.getRequestDispatcher("/pages/error.jsp").forward(request, response);
+        }
+    }
+
+    protected void addProperty(HttpServletRequest request, HttpServletResponse response) 
+            throws SQLException, IOException {
         Property property = new Property();
 
-        // String fields - safe to assign directly
+        // String fields
         property.setTitle(request.getParameter("title"));
         property.setDescription(request.getParameter("description"));
         property.setLocation(request.getParameter("location"));
@@ -118,81 +210,32 @@ public class AdminPropertiesServlet extends HttpServlet {
         property.setOwnerName(request.getParameter("ownerName"));
         property.setOwnerContact(request.getParameter("ownerContact"));
         property.setPrimaryImagePath(request.getParameter("primaryImagePath"));
+        property.setPropertyType(request.getParameter("propertyType"));
 
-        // Double fields with validation
-        try {
-            property.setPrice(Double.parseDouble(request.getParameter("price")));
-        } catch (NumberFormatException | NullPointerException ignored) {
-            property.setPrice(0.0); // Default value
-        }
+        // Double fields
+        property.setPrice(Double.parseDouble(request.getParameter("price")));
+        property.setAreaSqft(Integer.parseInt(request.getParameter("areaSqft")));
+        property.setLongitude(Double.parseDouble(request.getParameter("longitude")));
+        property.setLatitude(Double.parseDouble(request.getParameter("latitude")));
 
-        try {
-            property.setAreaSqft(Double.parseDouble(request.getParameter("areaSqft")));
-        } catch (NumberFormatException | NullPointerException ignored) {
-            property.setAreaSqft(0.0);
-        }
-
-        try {
-            property.setLongitude(Double.parseDouble(request.getParameter("longitude")));
-        } catch (NumberFormatException | NullPointerException ignored) {
-            property.setLongitude(0.0);
-        }
-
-        try {
-            property.setLatitude(Double.parseDouble(request.getParameter("latitude")));
-        } catch (NumberFormatException | NullPointerException ignored) {
-            property.setLatitude(0.0);
-        }
-
-        // Integer fields with validation
-        try {
-            property.setStorey(Integer.parseInt(request.getParameter("storey")));
-        } catch (NumberFormatException | NullPointerException ignored) {
-            property.setStorey(0);
-        }
-
-        try {
-            property.setBedrooms(Integer.parseInt(request.getParameter("bedrooms")));
-        } catch (NumberFormatException | NullPointerException ignored) {
-            property.setBedrooms(0);
-        }
-
-        try {
-            property.setBathrooms(Integer.parseInt(request.getParameter("bathrooms")));
-        } catch (NumberFormatException | NullPointerException ignored) {
-            property.setBathrooms(0);
-        }
-
-        try {
-            property.setYearBuilt(Integer.parseInt(request.getParameter("yearBuilt")));
-        } catch (NumberFormatException | NullPointerException ignored) {
-            property.setYearBuilt(0);
-        }
+        // Integer fields
+        property.setStorey(Integer.parseInt(request.getParameter("storey")));
+        property.setBedrooms(Integer.parseInt(request.getParameter("bedrooms")));
+        property.setBathrooms(Integer.parseInt(request.getParameter("bathrooms")));
+        property.setYearBuilt(Integer.parseInt(request.getParameter("yearBuilt")));
 
         // Boolean fields
-        property.setKitchen("on".equals(request.getParameter("kitchen")));
-        property.setAvailable("on".equals(request.getParameter("available")));
-        
-        // Timestamp: set automatically if not provided by form
+        property.setKitchen("true".equals(request.getParameter("kitchen")));
+        property.setAvailable("true".equals(request.getParameter("available")));
+
         property.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()));
 
-        // Add property to DB
-        try {
-            new PropertyDAO().addProperty(property);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Error adding property: " + e.getMessage());
-            request.getRequestDispatcher("/pages/error.jsp").forward(request, response);
-            return;
-        }
-
-        // Redirect instead of forward to prevent re-submission on refresh
+        propertyDAO.addProperty(property);
         response.sendRedirect("adminproperties");
     }
+
+    // Helper method
     private String getPropertyType(Property p) {
-        if (p.getTitle().contains("Apartment")) return "Apartment";
-        if (p.getTitle().contains("Land")) return "Land";
-        if (p.getTitle().contains("Commercial")) return "Commercial";
-        return "House";
+        return p.getPropertyType(); 
     }
 }

@@ -75,15 +75,7 @@
                         <input type="password" id="confirmPassword" name="confirmPassword" >
                     </div>
                 </div>
-                
-                <div class="form-group form-row">
-                    <div class="form-col">
-                         <label><input type="radio" name="role" value="CUSTOMER" > Customer</label>
-                    </div>
-                    <div class="form-col">
-                        <label><input type="radio" name="role" value="BROKER" > Broker</label>
-                    </div>
-                </div>                
+                                
                 <button type="submit" class="submit-btn">Create Account</button>
             </form>
         </div>
