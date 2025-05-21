@@ -18,7 +18,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo-container">
-                    <img src="https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744336330/sang_iefgzk.png " alt="Sangri-La Estates" class="logo-icon" />
+                    <img src="${pageContext.request.contextPath}/pictures/logo.png" alt="Sangri-La Estates" class="logo-icon" />
                     <span>Sangri-La Estates</span>
                 </div>
             </div>
@@ -26,6 +26,7 @@
             <a href="${pageContext.request.contextPath}/admin" class="nav-link">Dashboard</a>
             <a href="${pageContext.request.contextPath}/admin?action=properties" class="nav-link">Properties</a>
             <a href="${pageContext.request.contextPath}/admin?action=users" class="nav-link active">Users</a>
+            <a href="${pageContext.request.contextPath}/admin?action=inquiries" class="nav-link">Inquaries</a>
         </div>
 
         <!-- Main Content -->
@@ -98,9 +99,6 @@
                             <i class="fas fa-search"></i>
                             <input type="text" id="search-users" placeholder="Search users..." onkeyup="filterTable(this.value)">
                         </div>
-                        <button id="add-user-btn" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/user?action=add'">
-                            <i class="fas fa-plus"></i> Add User
-                        </button>
                     </div>
                 </div>
                 

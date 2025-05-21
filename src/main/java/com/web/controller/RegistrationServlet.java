@@ -42,18 +42,15 @@ public class RegistrationServlet extends HttpServlet {
 	    
 	}
 	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("RegistrationServlet: doPost method entered");
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {);
 		// Check if user is already logged in
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
             // User is already logged in, redirect to home page
-        	System.out.println("sds");
             response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
             return;
         }
         
-        System.out.println("servlet is accessed");
 		
 		String firstName=request.getParameter("firstName");
 		String lastName=request.getParameter("lastName");
@@ -115,7 +112,6 @@ public class RegistrationServlet extends HttpServlet {
 			
 			if (user==true) {
 			    // Registration successful
-				System.out.println("1");
 	            response.sendRedirect(request.getContextPath()+"/pages/login.jsp");
 			    
 			} else {

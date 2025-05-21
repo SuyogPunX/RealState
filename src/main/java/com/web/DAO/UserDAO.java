@@ -65,6 +65,7 @@ public class UserDAO {
 		            PreparedStatement updatestm=conn.prepareStatement("UPDATE user SET last_login =CURRENT_TIMESTAMP WHERE user_id=?");
 		            updatestm.setInt(1, user.getId());
 		            updatestm.executeUpdate();
+		           
 	           	
 				}
 			}
@@ -174,24 +175,15 @@ public class UserDAO {
 
 	public List<Booking> getAllBookings() throws SQLException {
 	    List<Booking> bookings = new ArrayList<>();
-	    
+
 	    String query = "SELECT " +
 	                   "b.booking_id AS id, " +
 	                   "b.property_id AS propertyId, " +
 	                   "b.user_id AS userId, " +
-	                   "b.scheduled_at AS scheduledAt, " +
-	                   "b.created_at AS createdAt, " +
-	                   "b.booking_date AS bookingDate, " +
 	                   "b.booking_time AS bookingTime, " +
-	                   "b.customer_comments AS customerComments, " +
 	                   "b.meeting_location AS meetingLocation, " +
-	                   "b.status AS status, " +
-	                   "u.name AS userName, " +
-	                   "u.email AS userEmail, " +
-	                   "p.title AS propertyName " +
-	                   "FROM bookings b " +
-	                   "JOIN user u ON b.user_id = u.user_id " +
-	                   "JOIN properties p ON b.property_id = p.propertyId";
+	                   "b.status AS status " +
+	                   "FROM booking b";
 
 	    try (PreparedStatement stmt = conn.prepareStatement(query);
 	         ResultSet rs = stmt.executeQuery()) {
@@ -202,24 +194,56 @@ public class UserDAO {
 	            booking.setId(rs.getInt("id"));
 	            booking.setPropertyId(rs.getInt("propertyId"));
 	            booking.setUserId(rs.getInt("userId"));
-
 	            booking.setBookingTime(rs.getTimestamp("bookingTime"));
-
 	            booking.setMeetingLocation(rs.getString("meetingLocation"));
 
-	            // Convert String status to Booking.Status enum
+	            // Convert database enum to Java enum
 	            String statusStr = rs.getString("status");
-	            if (statusStr != null) {
-	                booking.setStatus(Booking.Status.valueOf(statusStr));
+	            if (statusStr != null && !statusStr.isEmpty()) {
+	                try {
+	                    booking.setStatus(Booking.Status.valueOf(statusStr));
+	                } catch (IllegalArgumentException e) {
+	                    // Handle unknown status gracefully
+	                    booking.setStatus(null);
+	                }
 	            }
-
-
-
 	            bookings.add(booking);
 	        }
 	    }
 	    return bookings;
 	}
+	
+	public void updateBookingStatus(int id, String status) throws SQLException {
+	    String sql = "UPDATE Booking SET status = ? WHERE booking_id = ?";
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setString(1, status);
+	        stmt.setInt(2, id);
+	        stmt.executeUpdate();
+	    }
+	}
 
+	public List<Booking> getBookingsByUserId(int userId) throws SQLException {
+	    List<Booking> bookings = new ArrayList<>();
+	    String query = "SELECT * FROM booking WHERE user_id = ? AND status = 'PENDING'";
+
+	    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+	        stmt.setInt(1, userId);
+	        ResultSet rs = stmt.executeQuery();
+
+	        while (rs.next()) {
+	            Booking booking = new Booking();
+	            booking.setId(rs.getInt("booking_id"));
+	            booking.setPropertyId(rs.getInt("property_id"));
+	            booking.setUserId(rs.getInt("user_id"));
+	            booking.setBookingTime(rs.getTimestamp("booking_time"));
+	            booking.setMeetingLocation(rs.getString("meeting_location"));
+	            booking.setStatus(Booking.Status.valueOf(rs.getString("status")));
+
+	            bookings.add(booking);
+	        }
+	    }
+
+	    return bookings;
+	}
 	
 }

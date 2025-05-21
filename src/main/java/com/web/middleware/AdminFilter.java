@@ -48,7 +48,7 @@ public class AdminFilter implements Filter {
 
         User user = (User) session.getAttribute("user");
         if (user.getRole() != UserRole.ADMIN) {
-            response.sendRedirect(request.getContextPath() + "/pages/admin.jsp");
+            response.sendRedirect(request.getContextPath() + "/admin");
             return;
         }
 

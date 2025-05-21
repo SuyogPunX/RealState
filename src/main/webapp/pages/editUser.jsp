@@ -7,119 +7,87 @@
     <meta charset="UTF-8">
     <title>Edit User - Shangri-La Estates</title>
     <style>
+        /* Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            background-color: #f4f6f8;
-            color: #333;
-        }
-
-        .container {
+            padding: 0;
+            background: linear-gradient(to right, #e0ecff, #f7f9fc);
             display: flex;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background-color: #ffffff;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        .form-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
             margin-bottom: 20px;
-        }
-
-        .logo-icon {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-        }
-
-        .nav-link {
-            display: block;
-            padding: 10px 15px;
-            margin-bottom: 10px;
-            text-decoration: none;
-            color: #333;
-            border-radius: 4px;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            background-color: #e9ecef;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex-grow: 1;
-            padding: 20px;
-            background-color: #fff;
-        }
-
-        .page-header {
-            margin-bottom: 20px;
-        }
-
-        .page-header h1 {
             font-size: 24px;
-            margin: 0;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            color: #333;
         }
 
-        .form-select {
+        .form-control {
             width: 100%;
-            padding: 10px;
+            padding: 10px 14px;
             font-size: 14px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 8px;
             background-color: #f9f9f9;
+            transition: border-color 0.3s;
         }
 
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
+        .form-control:focus {
+            border-color: #3498db;
+            outline: none;
         }
 
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: #3498db;
-            border: 1px solid #3498db;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .modal-footer {
-            margin-top: 20px;
+        select.form-control {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%2212%22 height%3D%2212%22 viewBox%3D%220 0 24 24%22 fill%3D%22none%22 stroke%3D%22%23666%22 stroke-width%3D%222%22%3E%3Cpolyline points%3D%226 9 12 15 18 9%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 12px;
+            padding-right: 36px;
         }
 
         .badge {
+            display: inline-block;
             padding: 4px 8px;
-            border-radius: 4px;
             font-size: 12px;
+            border-radius: 4px;
             color: white;
+            font-weight: bold;
         }
 
         .badge-admin {
@@ -136,60 +104,92 @@
 
         .form-actions {
             display: flex;
+            justify-content: space-between;
             gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: #3498db;
+            border: 2px solid #3498db;
+        }
+
+        .btn-outline:hover {
+            background-color: #3498db;
+            color: white;
         }
     </style>
 </head>
 <body>
 
-<!-- Main Content -->
-<div class="main-content">
-    <div class="page-header">
-        <h1>Edit User</h1>
-    </div>
+<div class="form-container">
+    <h1>Edit User</h1>
 
-    <div class="card user-edit-card">
-        <form action="${pageContext.request.contextPath}/editUser" method="post">
-            <input type="hidden" name="userId" value="${user.id}" />
-            <input type="hidden" name="action" value="edit" />
+    <form action="${pageContext.request.contextPath}/editUser" method="post">
+        <input type="hidden" name="userId" value="${user.id}" />
+        <input type="hidden" name="action" value="edit" />
 
-            <!-- Property Title -->
-            <div class="form-group">
-                <label>User Name</label>
-                <p><strong>${user.fullName}</strong></p>
-            </div>
+        <!-- Full Name -->
+        <div class="form-group">
+            <label>User Name</label>
+            <p><strong>${user.fullName}</strong></p>
+        </div>
 
-            <!-- Current Role -->
-            <div class="form-group">
-                <label>Current Role</label>
-                <p>
-                    <c:choose>
-                        <c:when test="${user.role == 'ADMIN'}">
-                            <span class="badge badge-admin">Admin</span>
-                        </c:when>
-                        <c:when test="${user.role == 'CUSTOMER'}">
-                            <span class="badge badge-agent">Customer</span>
-                        </c:when>
-                    </c:choose>
-                </p>
-            </div>
+        <!-- Email -->
+        <div class="form-group">
+            <label>Email</label>
+            <p>${user.email}</p>
+        </div>
 
-            <!-- New Status -->
-            <div class="form-group">
-                <label for="status">New Status</label>
-                <select name="status" id="status" class="form-select" required>
-                    <option value="true" ${user.active ? 'selected' : ''}>Active</option>
-                    <option value="false" ${!user.active ? 'selected' : ''}>Inactive</option>
-                </select>
-            </div>
+        <!-- Role -->
+        <div class="form-group">
+            <label>Role</label>
+            <c:choose>
+                <c:when test="${user.role == 'ADMIN'}">
+                    <span class="badge badge-admin">Admin</span>
+                </c:when>
+                <c:when test="${user.role == 'CUSTOMER'}">
+                    <span class="badge badge-user">Customer</span>
+                </c:when>
+            </c:choose>
+        </div>
 
-            <!-- Action Buttons -->
-            <div class="modal-footer form-actions">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
-                <a href="${pageContext.request.contextPath}/admin?action=users" class="btn btn-outline">Cancel</a>
-            </div>
-        </form>
-    </div>
+        <!-- Status -->
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status" class="form-control" required>
+                <option value="true" ${user.active ? 'selected' : ''}>Active</option>
+                <option value="false" ${!user.active ? 'selected' : ''}>Inactive</option>
+            </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="${pageContext.request.contextPath}/admin?action=users" class="btn btn-outline">Back</a>
+        </div>
+    </form>
 </div>
 
 </body>

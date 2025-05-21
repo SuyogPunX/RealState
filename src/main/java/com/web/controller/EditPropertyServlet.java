@@ -64,7 +64,7 @@ public class EditPropertyServlet extends HttpServlet {
             propertyDAO.updateProperty(property);
 
             // Redirect back to properties list
-            response.sendRedirect(request.getContextPath() + "/adminproperties");
+            response.sendRedirect(request.getContextPath() + "/admin?action=properties");
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -49,8 +49,6 @@
                 <div class="member-image" style="background-image: url('https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744863814/TKPI0014_xgqjjg.jpg')"></div>
                 <div class="member-info">
                     <h3>Teju Khatri</h3>
-                    <p>Html, css, js </p>
-                    <p>15+ years in real estate</p>
                 </div>
             </div>
             
@@ -58,8 +56,6 @@
                 <div class="member-image" style="background-image: url('https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744863879/IMG_2621_wcw8qv.jpg')"></div>
                 <div class="member-info">
                     <h3>Sashant Shrestha</h3>
-                    <p>Html, css, js</p>
-                    <p>15+ years in real estate</p>
                 </div>
             </div>
         
@@ -67,8 +63,6 @@
                 <div class="member-image" style="background-image: url('https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744863815/20240512_145829_uf3njs.jpg')"></div>
                 <div class="member-info">
                     <h3>Sijan Thapa</h3>
-                    <p>Java Developer</p>
-                    <p>Specializes in Nepal</p>
                 </div>
             </div>
             
@@ -76,8 +70,6 @@
                 <div class="member-image" style="background-image: url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80')"></div>
                 <div class="member-info">
                     <h3>Suyog pun</h3>
-                    <p>Legal Advisor</p>
-                    <p>Property law specialist</p>
                 </div>
             </div>
             
@@ -85,8 +77,6 @@
                 <div class="member-image" style="background-image: url('https://images.unsplash.com/photo-1542190891-2093d38760f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80')"></div>
                 <div class="member-info">
                     <h3>Saurav Baral</h3>
-                    <p>Customer Relations</p>
-                    <p>Documentation</p>
                 </div>
             </div>
         </div>

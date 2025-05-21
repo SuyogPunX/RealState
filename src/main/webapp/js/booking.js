@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                  meetingDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             
             row.innerHTML = `
-                <td>${booking.bookingId}</td>
+                <td>${booking.id}</td>
                 <td>${formattedDate}</td>
                 <td>${booking.meetingLocation}</td>
                 <td>${booking.propertyId}</td>

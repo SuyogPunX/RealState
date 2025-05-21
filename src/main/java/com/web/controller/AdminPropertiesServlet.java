@@ -67,10 +67,83 @@ public class AdminPropertiesServlet extends HttpServlet {
 
     // === ACTIONS ===
 
+//    private void showAllProperties(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        List<Property> allProperties = Collections.emptyList();
+//
+//        try {
+//            allProperties = propertyDAO.getAllProperties();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            request.setAttribute("errorMessage", "Database error while fetching properties.");
+//        }
+//
+//        // Apply filters and sorting logic here
+//        List<Property> filtered = allProperties.stream()
+//                .filter(p -> {
+//                    String location = request.getParameter("location");
+//                    return location == null || location.equals("All of Nepal") || p.getLocation().equalsIgnoreCase(location);
+//                })
+//                .filter(p -> {
+//                    String propertyType = request.getParameter("propertyType");
+//                    return propertyType == null || propertyType.equals("All Types") || getPropertyType(p).equals(propertyType);
+//                })
+//                .collect(Collectors.toList());
+//
+//        // Sorting
+//        String sort = request.getParameter("sort");
+//        if ("priceAsc".equals(sort)) {
+//            filtered.sort(Comparator.comparingDouble(Property::getPrice));
+//        } else if ("priceDesc".equals(sort)) {
+//            filtered.sort((a, b) -> Double.compare(b.getPrice(), a.getPrice()));
+//        } else if ("areaAsc".equals(sort)) {
+//            filtered.sort(Comparator.comparingDouble(Property::getAreaSqft));
+//        } else if ("areaDesc".equals(sort)) {
+//            filtered.sort((a, b) -> Double.compare(b.getAreaSqft(), a.getAreaSqft()));
+//        } else {
+//            // Default: newest first
+//            filtered.sort((a, b) -> Integer.compare(b.getPropertyId(), a.getPropertyId()));
+//        }
+//
+////        // Pagination setup
+////        int currentPage = 1;
+////        String pageStr = request.getParameter("page");
+////        try {
+////            currentPage = Integer.parseInt(pageStr);
+////        } catch (NumberFormatException ignored) {}
+////
+////        int pageSize = 6;
+////        int totalItems = filtered.size();
+////        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+////
+////        int start = (currentPage - 1) * pageSize;
+////        int end = Math.min(start + pageSize, totalItems);
+////
+////        List<Property> paginatedList = Collections.emptyList();
+////        if (start < end && !filtered.isEmpty()) {
+////            paginatedList = filtered.subList(start, end);
+////        }
+//
+//        // Set attributes for JSP
+////        request.setAttribute("properties", paginatedList);
+////        request.setAttribute("totalProperties", totalItems);
+////        request.setAttribute("currentPage", currentPage);
+////        request.setAttribute("totalPages", totalPages);
+//        request.setAttribute("paramLocation", request.getParameter("location"));
+//        request.setAttribute("paramPropertyType", request.getParameter("propertyType"));
+//        request.setAttribute("paramMinPrice", request.getParameter("minPrice"));
+//        request.setAttribute("paramMaxPrice", request.getParameter("maxPrice"));
+//        request.setAttribute("paramMinArea", request.getParameter("minArea"));
+//        request.setAttribute("paramMaxArea", request.getParameter("maxArea"));
+//        request.setAttribute("paramSort", sort);
+//
+//        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/properties.jsp");
+//        dispatcher.forward(request, response);
+//    }
+
     private void showAllProperties(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Property> allProperties = Collections.emptyList();
-
         try {
             allProperties = propertyDAO.getAllProperties();
         } catch (SQLException e) {
@@ -78,69 +151,45 @@ public class AdminPropertiesServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Database error while fetching properties.");
         }
 
-        // Apply filters and sorting logic here
+        // === Apply Filters ===
+        String location = request.getParameter("location");
+        String propertyType = request.getParameter("propertyType");
+        String minPriceStr = request.getParameter("minPrice");
+        String maxPriceStr = request.getParameter("maxPrice");
+        String sort = request.getParameter("sort");
+
+        Double minPrice = parseDouble(minPriceStr);
+        Double maxPrice = parseDouble(maxPriceStr);
+
         List<Property> filtered = allProperties.stream()
-                .filter(p -> {
-                    String location = request.getParameter("location");
-                    return location == null || location.equals("All of Nepal") || p.getLocation().equalsIgnoreCase(location);
-                })
-                .filter(p -> {
-                    String propertyType = request.getParameter("propertyType");
-                    return propertyType == null || propertyType.equals("All Types") || getPropertyType(p).equals(propertyType);
-                })
+                .filter(p -> location == null || location.isEmpty() || p.getLocation().equalsIgnoreCase(location))
+                .filter(p -> propertyType == null || propertyType.isEmpty() || getPropertyType(p).equals(propertyType))
+                .filter(p -> minPrice == null || p.getPrice() >= minPrice)
+                .filter(p -> maxPrice == null || p.getPrice() <= maxPrice)
                 .collect(Collectors.toList());
 
-        // Sorting
-        String sort = request.getParameter("sort");
+        // === Sorting ===
         if ("priceAsc".equals(sort)) {
             filtered.sort(Comparator.comparingDouble(Property::getPrice));
         } else if ("priceDesc".equals(sort)) {
             filtered.sort((a, b) -> Double.compare(b.getPrice(), a.getPrice()));
-        } else if ("areaAsc".equals(sort)) {
-            filtered.sort(Comparator.comparingDouble(Property::getAreaSqft));
-        } else if ("areaDesc".equals(sort)) {
-            filtered.sort((a, b) -> Double.compare(b.getAreaSqft(), a.getAreaSqft()));
         } else {
-            // Default: newest first
+            // Default: newest first by ID
             filtered.sort((a, b) -> Integer.compare(b.getPropertyId(), a.getPropertyId()));
         }
 
-//        // Pagination setup
-//        int currentPage = 1;
-//        String pageStr = request.getParameter("page");
-//        try {
-//            currentPage = Integer.parseInt(pageStr);
-//        } catch (NumberFormatException ignored) {}
-//
-//        int pageSize = 6;
-//        int totalItems = filtered.size();
-//        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-//
-//        int start = (currentPage - 1) * pageSize;
-//        int end = Math.min(start + pageSize, totalItems);
-//
-//        List<Property> paginatedList = Collections.emptyList();
-//        if (start < end && !filtered.isEmpty()) {
-//            paginatedList = filtered.subList(start, end);
-//        }
-
-        // Set attributes for JSP
-//        request.setAttribute("properties", paginatedList);
-//        request.setAttribute("totalProperties", totalItems);
-//        request.setAttribute("currentPage", currentPage);
-//        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("paramLocation", request.getParameter("location"));
-        request.setAttribute("paramPropertyType", request.getParameter("propertyType"));
-        request.setAttribute("paramMinPrice", request.getParameter("minPrice"));
-        request.setAttribute("paramMaxPrice", request.getParameter("maxPrice"));
-        request.setAttribute("paramMinArea", request.getParameter("minArea"));
-        request.setAttribute("paramMaxArea", request.getParameter("maxArea"));
+        // Set filtered list and parameters for JSP
+        request.setAttribute("properties", filtered);
+        request.setAttribute("paramLocation", location);
+        request.setAttribute("paramPropertyType", propertyType);
+        request.setAttribute("paramMinPrice", minPriceStr);
+        request.setAttribute("paramMaxPrice", maxPriceStr);
         request.setAttribute("paramSort", sort);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/properties.jsp");
         dispatcher.forward(request, response);
     }
-
+    
     private void viewProperty(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -171,7 +220,7 @@ public class AdminPropertiesServlet extends HttpServlet {
 
     private void updateProperty(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	
+
     	int propertyId = Integer.parseInt(request.getParameter("propertyId"));
 
         try {
@@ -186,10 +235,10 @@ public class AdminPropertiesServlet extends HttpServlet {
             propertyDAO.updateProperty(property);
 
             // Redirect back to properties list
-//            response.sendRedirect(request.getContextPath() + "/adminproperties");
+           // response.sendRedirect(request.getContextPath() + "/adminproperties");
             
            
-            response.sendRedirect("adminproperties");
+            response.sendRedirect(request.getContextPath() +"/admin?action=properties");
 
         } catch (SQLException | NumberFormatException e) {
             e.printStackTrace();
@@ -234,6 +283,15 @@ public class AdminPropertiesServlet extends HttpServlet {
         response.sendRedirect("adminproperties");
     }
 
+    private Double parseDouble(String value) {
+        if (value == null || value.trim().isEmpty()) return null;
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+    
     // Helper method
     private String getPropertyType(Property p) {
         return p.getPropertyType(); 

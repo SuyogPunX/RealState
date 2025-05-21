@@ -22,6 +22,7 @@ public class PropertyServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    	
         String location = request.getParameter("location");
         String propertyType = request.getParameter("propertyType");
         String minPriceStr = request.getParameter("minPrice");
@@ -32,6 +33,14 @@ public class PropertyServlet extends HttpServlet {
         String maxAreaStr = request.getParameter("maxArea");
         String sort = request.getParameter("sort");
         String pageStr = request.getParameter("page");
+
+        // Apply defaults
+        if (location == null || location.isEmpty()) {
+                location = "All of Nepal";
+           }
+          if (propertyType == null || propertyType.isEmpty()) {
+                propertyType = "All Types";
+           }
 
         int currentPage = 1;
         try {

@@ -24,13 +24,8 @@ public class Property {
     private String ownerContact;
     private double longitude;
     private double latitude;
-    private List<String> imagePaths;  // Added for image path support
     private String primaryImagePath;  // Added for primary image
 
-    public Property() {
-        this.imagePaths = new ArrayList<>();
-    }
-    
 
     public String getPropertyType() {
 		return propertyType;
@@ -184,18 +179,6 @@ public class Property {
         this.latitude = latitude;
     }
 
-    // New getters and setters for image paths
-    public List<String> getImagePaths() {
-        return imagePaths;
-    }
-
-    public void setImagePaths(List<String> imagePaths) {
-        this.imagePaths = imagePaths;
-    }
-
-    public void addImagePath(String imagePath) {
-        this.imagePaths.add(imagePath);
-    }
 
     public String getPrimaryImagePath() {
         return primaryImagePath;

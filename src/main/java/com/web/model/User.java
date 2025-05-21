@@ -126,6 +126,13 @@ public class User {
 		this.active = active;
 	}
 
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", fullName=" + fullName + ", phone=" + phone + ", dob=" + dob + ", email=" + email
+				+ ", address=" + address + ", password=" + password + ", role=" + role + ", createdAt=" + createdAt
+				+ ", lastLogin=" + lastLogin + ", active=" + active + "]";
+	}
+
     
 
 }

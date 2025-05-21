@@ -10,7 +10,7 @@
 
 <header>
     <a href="${pageContext.request.contextPath}/pages/home.jsp" class="logo">
-            <img src="https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744336330/sang_iefgzk.png" alt="Sangri-La Estates" class="logo-icon" />
+            <img src="${pageContext.request.contextPath}/pictures/logo.png" alt="Sangri-La Estates" class="logo-icon" />
             <span>Sangri-La Estates</span>
     </a>
     

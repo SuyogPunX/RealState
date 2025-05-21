@@ -1,4 +1,5 @@
 <%@page import="com.web.model.User"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 String currentPage = request.getRequestURI();
@@ -92,13 +93,27 @@ String currentPage = request.getRequestURI();
 .header-icon {
     cursor: pointer;
 }
+.cart-button {
+    font-size: 24px; /* make the cart icon bigger */
+    padding: 10px 14px;
+    margin-left: -10px; /* move it slightly to the left */
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.cart-button:hover {
+    transform: scale(1.1); /* optional: makes the button grow slightly on hover */
+}
+
 </style>
 </head>
 <body>
 <header>
 <a href="${pageContext.request.contextPath}/pages/home.jsp" class="logo">
     <div class="logo-container">
-        <img src="https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744336330/sang_iefgzk.png" alt="Sangri-La Estates" class="logo-icon" />
+        <img src="${pageContext.request.contextPath}/pictures/logo.png" alt="Sangri-La Estates" class="logo-icon" />
         <span>Sangri-La Estates</span>
     </div>
 </a>
@@ -108,8 +123,8 @@ String currentPage = request.getRequestURI();
         <li class="<%= currentPage.endsWith("home.jsp") ? "active" : "" %>">
             <a href="${pageContext.request.contextPath}/pages/home.jsp">Home</a>
         </li>
-        <li class="<%= currentPage.endsWith("booking.jsp") ? "active" : "" %>">
-            <a href="${pageContext.request.contextPath}/pages/booking.jsp">Booking</a>
+        <li class="<%= currentPage.endsWith("buy.jsp") ? "active" : "" %>">
+            <a href="${pageContext.request.contextPath}/pages/buy.jsp">Booking</a>
         </li>
         <li class="<%= currentPage.endsWith("aboutus.jsp") ? "active" : "" %>">
             <a href="${pageContext.request.contextPath}/pages/aboutus.jsp">About Us</a>
@@ -121,12 +136,16 @@ String currentPage = request.getRequestURI();
 </nav>
 
 <div class="header-actions">
-    <div class="header-icon">🛒</div>
+    <a href="${pageContext.request.contextPath}/user?action=cart">
+    <button class="btn-icon cart-button" title="My Cart">🛒</button>
+	</a>
+	
     <div class="profile-dropdown">
         <div class="profile-icon" onclick="toggleProfileDropdown()">👤</div>
        <div class="profile-dropdown-content" id="profileDropdown">
 	    <c:choose>
 	        <c:when test="${not empty user}">
+	        
 	            <div class="profile-header">User Profile</div>
 	            <div class="profile-detail">
 	                <div class="detail-icon">👤</div>

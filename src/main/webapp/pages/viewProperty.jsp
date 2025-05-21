@@ -16,13 +16,10 @@
     <div class="main-content">
         <div class="page-header">
             <h1>Property Details</h1>
-            <a href="${pageContext.request.contextPath}/adminproperties?action=view" class="btn btn-outline">Back</a>
+            <a href="${pageContext.request.contextPath}/admin?action=properties" class="btn btn-outline">Back</a>
         </div>
 
         <div class="card property-details">
-            <div class="property-image">
-                <img src="${property.primaryImagePath}" alt="Property Image" width="400">
-            </div>
             <table class="details-table">
                 <tr><th>Title</th><td>${property.title}</td></tr>
                 <tr><th>Type</th><td>${property.propertyType}</td></tr>

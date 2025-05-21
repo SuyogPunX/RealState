@@ -67,6 +67,10 @@ public class AdminServlet extends HttpServlet {
                 case "inquiries":
                     showInquiries(request, response);
                     break;
+                    
+                case "updateInquiryStatus":
+                    updateInquiryStatus(request, response);
+                    break;
                 case "signout":
                     session.invalidate();
                     response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
@@ -79,8 +83,22 @@ public class AdminServlet extends HttpServlet {
         }
     }
 
-    private void showInquiries(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	
+
+
+    private void updateInquiryStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String status = request.getParameter("status");
+
+        try {
+            userDAO.updateBookingStatus(id, status);
+            response.sendRedirect("admin?action=inquiries"); // ✅ This will call showInquiries() again
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update status.");
+        }
+    }
+
+	private void showInquiries(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	List<Booking> inquiries = null;
 		try {
 			inquiries = userDAO.getAllBookings();
@@ -89,7 +107,7 @@ public class AdminServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		request.setAttribute("inquiries", inquiries);
-		request.getRequestDispatcher("/pages/inquiries.jsp").forward(request, response);
+		request.getRequestDispatcher("/pages/inquaries.jsp").forward(request, response);
 		
 	}
 

@@ -266,7 +266,7 @@ public class PropertyDAO {
 
                 // Image handling
                 p.setPrimaryImagePath(rs.getString("primaryImagePath"));
-                p.setImagePaths(List.of(rs.getString("primaryImagePath"))); // assuming one image for now
+                
 
                 properties.add(p);
             }

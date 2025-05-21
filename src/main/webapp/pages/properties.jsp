@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Properties - Shangri-La Estates</title>
+    <title>Properties - Sangri-La Estates</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/properties.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
 </head>
@@ -18,13 +18,15 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo-container">
-                    <img src="https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744336330/sang_iefgzk.png " alt="Shangri-La Estates" class="logo-icon" />
-                    <span>Shangri-La Estates</span>
+                    <img src="${pageContext.request.contextPath}/pictures/logo.png" alt="Shangri-La Estates" class="logo-icon" />
+                    <span>Sangri-La Estates</span>
                 </div>
             </div>
            <a href="${pageContext.request.contextPath}/admin" class="nav-link">Dashboard</a>
-			<a href="${pageContext.request.contextPath}/admin?action=properties" class="nav-link">Properties</a>
+			<a href="${pageContext.request.contextPath}/admin?action=properties" class="nav-link active">Properties</a>
 			<a href="${pageContext.request.contextPath}/admin?action=users" class="nav-link">Users</a>
+			<a href="${pageContext.request.contextPath}/admin?action=inquiries" class="nav-link">Inquaries</a>
+		
         </div>
 
         <!-- Main Content -->
@@ -33,11 +35,6 @@
             <div class="page-header">
                 <div class="header-title">
                     <h1>Properties</h1>
-                </div>
-                <div class="header-actions">
-                    <div class="user-profile">
-                        <div class="user-avatar">A</div>
-                    </div>
                 </div>
             </div>
 
@@ -128,9 +125,6 @@
                                 <tr>
                                     <td>
                                         <div class="property-item">
-                                            <div class="property-image">
-                                                <img src="${not empty property.primaryImagePath ? property.primaryImagePath : '/images/default.jpg'}" width="60" height="40" alt="${property.title}">
-                                            </div>
                                             <div>${property.title}</div>
                                         </div>
                                     </td>

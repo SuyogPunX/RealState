@@ -19,21 +19,19 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	System.out.println("loginservlet");
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
             // Already logged in
             User user = (User) session.getAttribute("user");
 
             if (user.getRole() == UserRole.ADMIN) {
-                response.sendRedirect(request.getContextPath() + "/pages/admin.jsp");
+                response.sendRedirect(request.getContextPath() + "/admin");
             } else {
                 String redirectURL = (String) session.getAttribute("redirectAfterLogin");
                 if (redirectURL != null) {
                     session.removeAttribute("redirectAfterLogin");
                     response.sendRedirect(redirectURL);
                 } else {
-                	System.out.println("home ma ");
                     response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
                 }
             }
@@ -52,7 +50,6 @@ public class LoginServlet extends HttpServlet {
 
         String email = request.getParameter("email");
         String plainPassword = request.getParameter("password");
-        System.out.println("loginservlet2");
         try {
             UserDAO userDAO = new UserDAO();
             User user = userDAO.login(email, plainPassword);
@@ -64,7 +61,7 @@ public class LoginServlet extends HttpServlet {
                 session.setMaxInactiveInterval(60 * 60); // 1 hour
 
                 if (user.getRole() == UserRole.ADMIN) {
-                    response.sendRedirect(request.getContextPath() + "/pages/admin.jsp");
+                    response.sendRedirect(request.getContextPath() + "/admin");
                 } else if(user.getRole() == UserRole.CUSTOMER) {
                 	 response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
                 }

@@ -43,7 +43,7 @@ public class AuthFilter implements Filter {
         
         // Public resources
         boolean isPublicResource = uri.contains("/css/") || uri.contains("/js/") ||
-                uri.contains("/images/") || uri.contains("/fonts/") ||
+                uri.contains("/pictures/") || uri.contains("/fonts/") ||
                 uri.endsWith("favicon.ico");
 
         // Pages allowed without login (only home, login, and register pages are public)
@@ -52,14 +52,7 @@ public class AuthFilter implements Filter {
 
         // If user is trying to access a protected resource without being logged in
         if (!loggedIn && !isPublicPage && !isPublicResource && !isPublicServlet) {
-            // Store the original request URI for redirection after login
-            // We create a session here only to store the redirect URL
-            HttpSession redirectSession = request.getSession(true);
-            
-            System.out.println(uri);
-            redirectSession.setAttribute("redirectAfterLogin", uri);
-           
-            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
+          response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
 
