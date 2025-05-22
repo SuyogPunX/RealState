@@ -46,7 +46,7 @@
         
         <div class="team-grid">
             <div class="team-member">
-                <div class="member-image" style="background-image: url('https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744863814/TKPI0014_xgqjjg.jpg')"></div>
+                <div class="member-image" style="background-image: url('${pageContext.request.contextPath}/pictures/teju.jpg');"></div>
                 <div class="member-info">
                     <h3>Teju Khatri</h3>
                 </div>
@@ -60,21 +60,21 @@
             </div>
         
             <div class="team-member">
-                <div class="member-image" style="background-image: url('https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744863815/20240512_145829_uf3njs.jpg')"></div>
+                <div class="member-image" style="background-image: url('${pageContext.request.contextPath}/pictures/sijan.jpg');"></div>
                 <div class="member-info">
                     <h3>Sijan Thapa</h3>
                 </div>
             </div>
             
             <div class="team-member">
-                <div class="member-image" style="background-image: url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80')"></div>
+                <div class="member-image" style="background-image: url('${pageContext.request.contextPath}/pictures/suyog.jpg');"></div>
                 <div class="member-info">
                     <h3>Suyog pun</h3>
                 </div>
             </div>
             
             <div class="team-member">
-                <div class="member-image" style="background-image: url('https://images.unsplash.com/photo-1542190891-2093d38760f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80')"></div>
+                <div class="member-image" style="background-image: url('${pageContext.request.contextPath}/pictures/saurav.jpg');"></div>
                 <div class="member-info">
                     <h3>Saurav Baral</h3>
                 </div>
