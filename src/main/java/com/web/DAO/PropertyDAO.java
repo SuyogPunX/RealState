@@ -45,21 +45,11 @@ public class PropertyDAO {
             params.add(location);
         }
 
+    
         // Apply property type filter
         if (propertyType != null && !propertyType.equals("All Types")) {
-            if (propertyType.equals("House")) {
-                query.append(" AND p.title LIKE ?");
-                params.add("%House%");
-            } else if (propertyType.equals("Apartment")) {
-                query.append(" AND p.title LIKE ?");
-                params.add("%Apartment%");
-            } else if (propertyType.equals("Land")) {
-                query.append(" AND p.title LIKE ?");
-                params.add("%Land%");
-            } else if (propertyType.equals("Commercial")) {
-                query.append(" AND p.title LIKE ?");
-                params.add("%Commercial%");
-            }
+            query.append(" AND p.propertyType = ?");
+            params.add(propertyType);
         }
 
         // Price Range Filters

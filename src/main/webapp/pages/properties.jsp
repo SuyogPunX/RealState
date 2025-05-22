@@ -52,11 +52,8 @@
                                 <select name="propertyType" id="propertyType" class="form-select">
                                     <option value="">All Types</option>
                                     <option value="Apartment" ${param.propertyType == 'Apartment' ? 'selected' : ''}>Apartment</option>
-                                    <option value="House" ${param.propertyType == 'House' ? 'selected' : ''}>House</option>
-                                    <option value="Land" ${param.propertyType == 'Land' ? 'selected' : ''}>Land</option>
-                                    <option value="Commercial" ${param.propertyType == 'Commercial' ? 'selected' : ''}>Commercial</option>
-                                    <option value="Villa" ${param.propertyType == 'Villa' ? 'selected' : ''}>Villa</option>
-                                    <option value="Restaurant" ${param.propertyType == 'Restaurant' ? 'selected' : ''}>Restaurant</option>
+									<option value="House" ${param.propertyType == 'House' ? 'selected' : ''}>House</option>
+									<option value="Commercial" ${param.propertyType == 'Commercial' ? 'selected' : ''}>Commercial</option>
                                 </select>
                             </div>
 

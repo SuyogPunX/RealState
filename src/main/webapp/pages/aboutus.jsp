@@ -53,7 +53,7 @@
             </div>
             
             <div class="team-member">
-                <div class="member-image" style="background-image: url('https://res.cloudinary.com/dxb3ogrhz/image/upload/v1744863879/IMG_2621_wcw8qv.jpg')"></div>
+                <div class="member-image" style="background-image: url('${pageContext.request.contextPath}/pictures/sashant.JPG');"></div>
                 <div class="member-info">
                     <h3>Sashant Shrestha</h3>
                 </div>
