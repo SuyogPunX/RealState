@@ -1,6 +1,6 @@
-# First, un-ignore important files
+# Un-ignore important directories and files first
 !/.gitignore
 !/src/
 
-# Then ignore everything else
+# Ignore everything else
 *
